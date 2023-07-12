@@ -1,0 +1,25 @@
+{
+	"folders": [
+		{
+			"name": "git_root",
+			"path": ".."
+		},
+		{
+			"name": "docker_root",
+			"path": "../project"
+		},
+		{
+			"name": "docker_apps",
+			"path": "../project/apps"
+		},
+		{
+			"name": "proxy",
+			"path": "../project/apps/proxy/"
+		},
+		{
+			"name": "api",
+			"path": "../project/apps/api/app"
+		}
+	],
+	"settings": {}
+}
