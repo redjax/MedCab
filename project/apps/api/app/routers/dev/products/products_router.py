@@ -17,7 +17,7 @@ tags = ["products"]
 router = APIRouter(prefix="/products", tags=tags)
 
 
-@router.get("/.")
+@router.get("/")
 def product_index() -> dict[str, str]:
     log.debug("/product root reached")
     return {"msg": "Product root reached"}
