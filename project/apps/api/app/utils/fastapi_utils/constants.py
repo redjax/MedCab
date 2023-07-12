@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-from .tag_definitions import tags_metadata
 
 default_allow_credentials: bool = True
 default_allowed_origins: list[str] = ["*"]

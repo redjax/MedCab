@@ -6,7 +6,9 @@ import logging
 from fastapi import APIRouter, HTTPException, status
 import uvicorn
 
-router = APIRouter(tags=["util"], responses={404: {"description": "Not found"}})
+tags = ["util"]
+
+router = APIRouter(tags=tags, responses={404: {"description": "Not found"}})
 
 
 ## Define filter for pings to /healthy

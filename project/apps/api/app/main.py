@@ -20,7 +20,7 @@ from utils.fastapi_utils import (
     healthcheck,
     logging_dependency,
     tags_metadata,
-    update_tags_metadata,
+    compile_tag_metadata,
 )
 from utils.loguru_utils import init_logger
 
