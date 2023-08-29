@@ -2,10 +2,10 @@ from __future__ import annotations
 
 from fastapi import APIRouter, Depends, HTTPException
 from loguru import logger as log
-from settings.config import app_settings
-from utils.fastapi_utils import default_api_str, tags_metadata
+from config import settings
+from red_utils.fastapi_utils import default_api_str, tags_metadata
 
-ENV: str = app_settings.APP_ENV
+ENV: str = settings.env
 
 if ENV == "dev":
     log.debug(f"Building dev router")
@@ -16,9 +16,7 @@ elif ENV == "prod":
     from routers.prod import prod_router
 
 else:
-    log.warning(
-        ValueError(f"Invalid env: {app_settings.APP_ENV}. Defaulting to 'prod'")
-    )
+    log.warning(ValueError(f"Invalid env: {settings.env}. Defaulting to 'prod'"))
     ENV: str = "prod"
 
     from routers.prod import prod_router

@@ -10,19 +10,23 @@ from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from loguru import logger as log
-from settings.config import app_settings, logging_settings
+
+# from settings.config import app_settings, logging_settings
+from config import settings
 from starlette.routing import Match
-from utils.diskcache_utils import default_cache_dir
-from utils.fastapi_utils import (
+from red_utils.diskcache_utils import default_cache_dir
+from red_utils.fastapi_utils import (
     default_api_str,
     default_openapi_url,
     get_app,
     healthcheck,
     logging_dependency,
     tags_metadata,
-    compile_tag_metadata,
+    update_tags_metadata,
+    validate_openapi_tags,
+    fix_api_docs,
 )
-from utils.loguru_utils import init_logger
+from red_utils.loguru_utils import init_logger
 
 init_logger()
 
@@ -38,9 +42,9 @@ log.debug("Creating frontend FastAPI app")
 
 app = get_app(
     cors=True,
-    title=app_settings.APP_TITLE,
-    description=app_settings.APP_DESCRIPTION,
-    version=app_settings.APP_VERSION,
+    title=settings.fastapi["title"],
+    description=settings.fastapi["description"],
+    version=settings.app["version"],
     openapi_tags=tags_metadata,
     openapi_url=default_openapi_url,
     debug=True,
@@ -52,10 +56,10 @@ if not Path("static").exists():
     log.debug("Static path does not exist, skip mounting")
 else:
     log.debug("Found /static dir, mounting to app")
-    if app_settings.APP_ENV == "dev":
+    if settings.env == "dev":
         app.mount("/static", StaticFiles(directory="static/dev"), name="static")
     else:
-        app.mount("/static", StaticFiles(directory="static/live"), name="static")
+        app.mount("/static", StaticFiles(directory="static/prod"), name="static")
 
 ## Include routers
 app.include_router(healthcheck.router)
@@ -68,4 +72,4 @@ app.router.redirect_slashes = False
 if __name__ == "__main__":
     log.info("Starting frontend app")
 
-    log.debug(f"App settings: {app_settings}")
+    log.debug(f"App settings: {settings.__dict__}")

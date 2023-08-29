@@ -24,11 +24,11 @@ services:
     ports:
       - ${MEDCAB_API_PORT:-8000}:8000
     environment:
-      APP_TITLE: ${MEDCAB_API_APP_TITLE:-Default App Title}
-      APP_DESCRIPTION: ${MEDCAB_API_APP_DESCRIPTION:-Default app description}
-      APP_VERSION: ${MEDCAB_API_APP_VER:-0.1}
-      LOG_LEVEL: ${MEDCAB_API_LOG_LEVEL:-INFO}
-      APP_ENV: ${MEDCAB_API_APP_ENV:-prod}
+      DYNACONF_TITLE: ${MEDCAB_API_APP_TITLE:-Default App Title}
+      DYNACONF_DESCRIPTION: ${MEDCAB_API_APP_DESCRIPTION:-Default app description}
+      DYNACONF_VERSION: ${MEDCAB_API_APP_VER:-0.1}
+      DYNACONF_LEVEL: ${MEDCAB_API_LOG_LEVEL:-INFO}
+      DYNACONF_ENV: ${MEDCAB_API_APP_ENV:-prod}
     healthcheck:
       test: curl --fail http://backend:8000/health
       interval: 5m
