@@ -19,5 +19,5 @@ router = APIRouter(prefix="/products", tags=tags)
 
 @router.get("/")
 def product_index() -> dict[str, str]:
-    log.debug("/product root reached")
-    return {"msg": "Product root reached"}
+    log.debug("/products root reached")
+    return {"msg": "Products root reached"}

@@ -10,11 +10,13 @@ from pathlib import Path
 
 from loguru import logger as log
 from pydantic import BaseModel
-from settings.config import app_settings, logging_settings
-from utils.loguru_utils import init_logger
+
+# from settings.config import app_settings, logging_settings
+from config import settings
+from red_utils.loguru_utils import init_logger
 import uvicorn
 
-ENV = app_settings.APP_ENV
+ENV: str = settings.env
 
 if __name__ == "__main__":
     ## If this file was run directly, initialize logger.
