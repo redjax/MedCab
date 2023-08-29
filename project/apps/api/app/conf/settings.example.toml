@@ -1,0 +1,24 @@
+###############################################
+# Make sure values in this file are all       #
+# commented when running container in Docker. #
+###############################################
+
+env = "dev"
+
+[app]
+name = "Medical Cabinet"
+version = "0.1.0"
+
+[logging]
+level = "DEBUG"
+
+[fastapi]
+title = "Medical Cabinet"
+description = "Manage them strains"
+port = 8086
+
+## Example API section
+##[some_api]
+# base_url = "..."
+# api_key = "..."
+# token = "..."
