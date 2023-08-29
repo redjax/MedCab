@@ -13,12 +13,16 @@
 			"path": "../project/apps"
 		},
 		{
-			"name": "proxy",
+			"name": "docker/proxy",
 			"path": "../project/apps/proxy/"
 		},
 		{
-			"name": "api",
+			"name": "docker/api",
 			"path": "../project/apps/api/app"
+		},
+		{
+			"name": "docker/frontend",
+			"path": "../project/apps/frontend/app"
 		}
 	],
 	"settings": {}
