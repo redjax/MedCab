@@ -2,7 +2,7 @@ from typing import Any, Optional, List
 
 import uuid
 
-from datetime import datetime, timedelta
+from datetime import datetime, date, timedelta
 
 from red_utils.sqlalchemy_utils import Base
 import sqlalchemy as sa
@@ -22,15 +22,13 @@ class ProductModel(Base):
     strain: Mapped[str] = mapped_column(sa.String, index=True)
     favorite: Mapped[bool] = mapped_column(sa.Boolean, index=True)
     weight: Mapped[float] = mapped_column(sa.Float)
-    purchaseDate: Mapped[datetime] = mapped_column(
-        sa.DateTime(timezone=True), nullable=True
-    )
+    purchaseDate: Mapped[date] = mapped_column(sa.Date, nullable=True)
     dispensary: Mapped[str] = mapped_column(sa.String)
     brand: Mapped[str] = mapped_column(sa.String, index=True)
     manufacturer: Mapped[str] = mapped_column(sa.String)
-    harvestDate: Mapped[datetime] = mapped_column(sa.DateTime(timezone=True))
-    expirationDate: Mapped[datetime] = mapped_column(sa.DateTime(timezone=True))
-    testedDate: Mapped[datetime] = mapped_column(sa.DateTime(timezone=True))
-    packageDate: Mapped[datetime] = mapped_column(sa.DateTime(timezone=True))
+    harvestDate: Mapped[date] = mapped_column(sa.Date)
+    expirationDate: Mapped[date] = mapped_column(sa.Date)
+    testedDate: Mapped[date] = mapped_column(sa.Date)
+    packageDate: Mapped[date] = mapped_column(sa.Date)
     batchNumber: Mapped[str] = mapped_column(sa.String)
     form: Mapped[str] = mapped_column(sa.String, index=True)

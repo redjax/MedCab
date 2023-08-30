@@ -135,20 +135,20 @@ class ProductBase(BaseModel):
     strain: str = Field(default=None)
     favorite: Optional[bool] = Field(default=False)
     weight: float = Field(default=0.0)
-    purchaseDate: Optional[datetime] = Field(default=None)
+    purchaseDate: Optional[date] = Field(default=None)
     dispensary: Optional[str] = Field(default=None)
     brand: Optional[str] = Field(default=None)
     manufacturer: Optional[str] = Field(default=None)
-    harvestDate: Optional[datetime] = Field(default=None)
-    expirationDate: Optional[datetime] = Field(default=None)
-    testedDate: Optional[datetime] = Field(default=None)
-    packageDate: Optional[datetime] = Field(default=None)
+    harvestDate: Optional[date] = Field(default=None)
+    expirationDate: Optional[date] = Field(default=None)
+    testedDate: Optional[date] = Field(default=None)
+    packageDate: Optional[date] = Field(default=None)
     batchNumber: Optional[str] = Field(default=None)
     form: Optional[str] = Field(default=None)
-    cannabinoids: Optional[CannabinoidList] = Field(default=None)
-    terpenes: Optional[list[Terpene]] = Field(default=None)
-    notes: Optional[list[ProductNote]] = None
-    images: Optional[list[ProductImage]] = None
+    # cannabinoids: Optional[CannabinoidList] = Field(default=None)
+    # terpenes: Optional[list[Terpene]] = Field(default=None)
+    # notes: Optional[list[ProductNote]] = None
+    # images: Optional[list[ProductImage]] = None
 
     @validator("strain")
     def validate_strain(cls, v) -> str:
@@ -188,20 +188,20 @@ class ProductUpdate(ProductBase):
     strain: str | None = None
     favorite: bool | None = None
     weight: float | None = None
-    purchaseDate: datetime | None = None
+    purchaseDate: date | None = None
     dispensary: str | None = None
     brand: str | None = None
     manufacturer: str | None = None
-    harvestDate: datetime | None = None
-    expirationDate: datetime | None = None
-    testedDate: datetime | None = None
-    packageDate: datetime | None = None
+    harvestDate: date | None = None
+    expirationDate: date | None = None
+    testedDate: date | None = None
+    packageDate: date | None = None
     batchNumber: str | None = None
     form: str | None = None
-    cannabinoids: CannabinoidList | None = None
-    terpenes: list[Terpene] | None = None
-    notes: list[ProductNote] | None = None
-    images: list[ProductImage] | None = None
+    # cannabinoids: CannabinoidList | None = None
+    # terpenes: list[Terpene] | None = None
+    # notes: list[ProductNote] | None = None
+    # images: list[ProductImage] | None = None
 
     class Config:
         from_attributes = True
