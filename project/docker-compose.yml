@@ -29,6 +29,7 @@ services:
       DYNACONF_VERSION: ${MEDCAB_API_APP_VER:-0.1}
       DYNACONF_LEVEL: ${MEDCAB_API_LOG_LEVEL:-INFO}
       DYNACONF_ENV: ${MEDCAB_API_APP_ENV:-prod}
+      DYNACONF_CONTAINER_ENV: True
     healthcheck:
       test: curl --fail http://backend:8000/health
       interval: 5m
