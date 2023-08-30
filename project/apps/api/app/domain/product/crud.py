@@ -58,3 +58,37 @@ def create_product(product: ProductCreate = None, db: Session = None):
 
     except Exception as exc:
         raise Exception(f"Unhandled exception creating Product. Details: {exc}")
+
+
+def get_all_products(db: Session = None):
+    validate_db(db)
+
+    try:
+        with db as sess:
+            all_products = sess.query(ProductModel).all()
+
+            return all_products
+
+    except Exception as exc:
+        raise Exception(f"Unhandled exception getting all Products. Details: {exc}")
+
+
+def get_product_by_name(name: str = None, db: Session = None) -> Product:
+    if not name:
+        raise ValueError("Missing a name to search")
+
+    if not isinstance(name, str):
+        raise ValueError(f"Invalid type for name: {type(name)}. Must be of type str")
+
+    try:
+        with db as sess:
+            db_product = (
+                sess.query(ProductModel).where(ProductModel.name == name).first()
+            )
+
+            return db_product
+
+    except Exception as exc:
+        raise Exception(
+            f"Unhandled exception retrieving Product by name '{name}'. Details: {exc}"
+        )
