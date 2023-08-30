@@ -16,7 +16,13 @@ from config import settings
 from red_utils.loguru_utils import init_logger
 import uvicorn
 
-ENV: str = settings.env
+ENV: str = settings.ENV
+CONTAINER_ENV: bool = settings.CONTAINER_ENV
+
+if CONTAINER_ENV:
+    env_string: str = f"[env:{ENV.upper()} (container)]"
+else:
+    env_string: str = f"[env:{ENV.upper()}]"
 
 if __name__ == "__main__":
     ## If this file was run directly, initialize logger.
@@ -71,7 +77,7 @@ if __name__ == "__main__":
         case _:
             server = prod_server
 
-    log.info(f"Starting [{ENV}] Uvicorn server")
+    log.info(f"Starting Uvicorn server | {env_string}")
     log.debug(f"Uvicorn config: {server}")
 
     log.debug(f"Serving app {server.app} on port {server.port}")
