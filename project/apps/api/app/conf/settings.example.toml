@@ -12,6 +12,14 @@ container_env = false
 name = "Medical Cabinet"
 version = "0.1.0"
 
+[db]
+dbtype = "sqlite"
+db_host = ""
+db_username = ""
+db_password = ""
+db_port = ""
+db_database = ".db/demo.sqlite"
+
 [logging]
 level = "DEBUG"
 
