@@ -4,6 +4,9 @@
 ###############################################
 
 env = "dev"
+## Leave this set to False. It can be overridden
+#  with Docker Compose's env: section
+container_env = false
 
 [app]
 name = "Medical Cabinet"
