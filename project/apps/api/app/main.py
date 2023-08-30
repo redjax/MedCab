@@ -28,6 +28,8 @@ from red_utils.fastapi_utils import (
 )
 from red_utils.loguru_utils import init_logger
 
+from constants import ENV, CONTAINER_ENV, env_string
+
 init_logger()
 
 from routers import api_router
@@ -71,5 +73,4 @@ app.router.redirect_slashes = False
 
 if __name__ == "__main__":
     log.info("Starting frontend app")
-
     log.debug(f"App settings: {settings.__dict__}")

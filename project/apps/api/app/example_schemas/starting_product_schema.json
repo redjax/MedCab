@@ -1,0 +1,55 @@
+{
+    "id": null,
+    "brand": null,
+    "favorite": false,
+    "weight": null,
+    "purchaseDate": null,
+    "dispensary": null,
+    "manufacturer": null,
+    "harvestDate": null,
+    "expirationDate": null,
+    "testedDate": null,
+    "packageDate": null,
+    "batchNumber": null,
+    "form": null,
+    "name": null,
+    "strain": null,
+    "cannabinoids": {
+        "thc": [
+            {
+                "name": null,
+                "content": null
+            }
+        ],
+        "cbd": [
+            {
+                "name": null,
+                "content": null
+            }
+        ],
+        "other": [
+            {
+                "name": null,
+                "content": null,
+                "note": null
+            }
+        ]
+    },
+    "terpenes": [
+        {
+            "name": null,
+            "content": null
+        }
+    ],
+    "notes": [
+        {
+            "date": null,
+            "message": null
+        }
+    ],
+    "images": [
+        {
+            "imageId": ""
+        }
+    ]
+}
