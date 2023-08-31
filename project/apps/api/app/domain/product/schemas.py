@@ -170,6 +170,14 @@ class ProductBase(BaseModel):
 
         return v
 
+    @validator("batchNumber")
+    def validate_batch_number(cls, v) -> str:
+        if v:
+            if len(v) > 24:
+                raise ValidationError
+
+        return v
+
 
 class ProductCreate(ProductBase):
     id: int

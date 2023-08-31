@@ -1,10 +1,12 @@
 {
     "id": null,
-    "brand": null,
+    "name": null,
+    "strain": null,
     "favorite": false,
-    "weight": null,
+    "weight": 0.0,
     "purchaseDate": null,
     "dispensary": null,
+    "brand": null,
     "manufacturer": null,
     "harvestDate": null,
     "expirationDate": null,
@@ -12,8 +14,6 @@
     "packageDate": null,
     "batchNumber": null,
     "form": null,
-    "name": null,
-    "strain": null,
     "cannabinoids": {
         "thc": [
             {

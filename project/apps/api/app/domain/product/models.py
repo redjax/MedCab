@@ -8,8 +8,10 @@ from red_utils.sqlalchemy_utils import Base
 import sqlalchemy as sa
 from sqlalchemy.sql import func
 
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy.orm import Session, Mapped, mapped_column
 from red_utils.sqlalchemy_utils.custom_types import CompatibleUUID
+
+from loguru import logger as log
 
 
 class ProductModel(Base):
