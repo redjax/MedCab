@@ -14,6 +14,7 @@ from loguru import logger as log
 # from settings.config import app_settings, logging_settings
 from config import settings
 from starlette.routing import Match
+
 from red_utils.diskcache_utils import default_cache_dir
 from red_utils.fastapi_utils import (
     default_api_str,
@@ -28,9 +29,24 @@ from red_utils.fastapi_utils import (
 )
 from red_utils.loguru_utils import init_logger
 
+from constants import (
+    ENV,
+    CONTAINER_ENV,
+    env_string,
+    app_title,
+    app_description,
+    app_version,
+)
+
+from dependencies import Base, create_base_metadata, engine, db_config
+
+from domain.product import ProductModel
+
 init_logger()
 
 from routers import api_router
+
+create_base_metadata(Base(), engine=engine)
 
 allowed_origins: list[str] = ["*"]
 allow_credentials: bool = True
@@ -40,11 +56,11 @@ allowed_headers: list[str] = ["*"]
 included_routers = [healthcheck.router, api_router.router]
 log.debug("Creating frontend FastAPI app")
 
-app = get_app(
+app: FastAPI = get_app(
     cors=True,
-    title=settings.fastapi["title"],
-    description=settings.fastapi["description"],
-    version=settings.app["version"],
+    title=app_title,
+    description=app_description,
+    version=app_version,
     openapi_tags=tags_metadata,
     openapi_url=default_openapi_url,
     debug=True,
@@ -71,5 +87,4 @@ app.router.redirect_slashes = False
 
 if __name__ == "__main__":
     log.info("Starting frontend app")
-
     log.debug(f"App settings: {settings.__dict__}")

@@ -1,0 +1,16 @@
+{
+    "name": "Bubblegum",
+    "strain": "hybrid",
+    "favorite": false,
+    "weight": 0.5,
+    "purchaseDate": "2023-08-18",
+    "dispensary": "The Botanist",
+    "brand": "Pure Ohio",
+    "manufacturer": "Pure Ohio Wellness",
+    "harvestDate": "2023-04-11",
+    "expirationDate": "2024-04-11",
+    "testedDate": "2023-04-18",
+    "packageDate": "2023-04-25",
+    "batchNumber": "1A4071500002C25000002937",
+    "form": "vaporizer"
+}
