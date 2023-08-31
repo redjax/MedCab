@@ -1,4 +1,5 @@
 from typing import Optional, Any, Union
+import uuid
 import arrow
 from pathlib import Path
 from datetime import date, datetime, time
@@ -15,7 +16,8 @@ class CannabinoidTerpeneBase(BaseModel):
 
 
 class CannabinoidCreate(CannabinoidTerpeneBase):
-    id: int
+    # id: int
+    id: uuid.UUID | None = None
 
     class Config:
         from_attributes = True
@@ -26,7 +28,8 @@ class Cannabinoid(CannabinoidTerpeneBase):
 
 
 class CannabinoidUpdate(CannabinoidTerpeneBase):
-    id: int | None = None
+    # id: int | None = None
+    id: uuid.UUID | None = None
     name: str | None = None
     content: float | None = None
 
@@ -35,7 +38,8 @@ class CannabinoidUpdate(CannabinoidTerpeneBase):
 
 
 class CannabinoidOtherCreate(CannabinoidTerpeneBase):
-    id: int
+    # id: int
+    id: uuid.UUID | None = None
 
     class Config:
         from_attributes = True
@@ -46,7 +50,8 @@ class CannabinoidOther(CannabinoidTerpeneBase):
 
 
 class CannabinoidUpdate(CannabinoidTerpeneBase):
-    id: int | None = None
+    # id: int | None = None
+    id: uuid.UUID | None = None
     name: str | None = None
     content: float | None = None
     note: str | None = None
@@ -69,7 +74,8 @@ class TerpeneBase(CannabinoidTerpeneBase):
 
 
 class TerpeneCreate(CannabinoidTerpeneBase):
-    id: int
+    # id: int
+    id: uuid.UUID | None = None
 
     class Config:
         from_attributes = True
@@ -80,7 +86,8 @@ class Terpene(TerpeneBase):
 
 
 class TerpeneUpdate(TerpeneBase):
-    id: int | None = None
+    # id: int | None = None
+    id: uuid.UUID | None = None
     name: str | None = None
     content: float | None = None
 
@@ -91,7 +98,8 @@ class ProductNoteBase(BaseModel):
 
 
 class ProductNoteCreate(ProductNoteBase):
-    id: int
+    # id: int
+    id: uuid.UUID | None = None
 
     class Config:
         from_attributes = True
@@ -102,7 +110,8 @@ class ProductNote(ProductNoteBase):
 
 
 class ProductNoteUpdate(ProductNoteBase):
-    id: int | None = None
+    # id: int | None = None
+    id: uuid.UUID | None = None
     date: datetime | None = None
     content: float | None = None
 
@@ -126,7 +135,8 @@ class ProductImage(ProductImageBase):
 
 
 class ProductImateUpdate(ProductImageBase):
-    id: int | None = None
+    # id: int | None = None
+    id: uuid.UUID | None = None
     imageId: int | None = None
 
 
@@ -180,7 +190,8 @@ class ProductBase(BaseModel):
 
 
 class ProductCreate(ProductBase):
-    id: int
+    # id: int
+    id: uuid.UUID
 
     class Config:
         from_attributes = True
@@ -191,7 +202,8 @@ class Product(ProductBase):
 
 
 class ProductUpdate(ProductBase):
-    id: int | None = None
+    # id: int | None = None
+    id: uuid.UUID | None = None
     name: str | None = None
     strain: str | None = None
     favorite: bool | None = None

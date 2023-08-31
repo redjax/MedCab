@@ -5,6 +5,7 @@ import uuid
 from datetime import datetime, date, timedelta
 
 from red_utils.sqlalchemy_utils import Base
+from red_utils.sqlalchemy_utils.custom_types import CompatibleUUID
 import sqlalchemy as sa
 from sqlalchemy.sql import func
 
@@ -17,9 +18,12 @@ from loguru import logger as log
 class ProductModel(Base):
     __tablename__ = "product"
 
-    # type_annotation_map = {uuid.UUID: CompatibleUUID}
+    type_annotation_map = {uuid.UUID: CompatibleUUID}
 
-    id: Mapped[int] = mapped_column(sa.Integer, primary_key=True)
+    # id: Mapped[int] = mapped_column(sa.Integer, primary_key=True)
+    id: Mapped[uuid.UUID] = mapped_column(
+        primary_key=True, index=True, insert_default=uuid.uuid4
+    )
     name: Mapped[str] = mapped_column(sa.String, index=True)
     strain: Mapped[str] = mapped_column(sa.String, index=True)
     favorite: Mapped[bool] = mapped_column(sa.Boolean, index=True)

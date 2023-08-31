@@ -1,3 +1,5 @@
+import uuid
+
 from .schemas import ProductCreate, Product
 from .models import ProductModel
 
@@ -75,7 +77,7 @@ def get_all_products(db: Session = None) -> list[ProductModel]:
         raise Exception(f"Unhandled exception getting all Products. Details: {exc}")
 
 
-def get_product_by_id(id: int = None, db: Session = None) -> ProductModel:
+def get_product_by_id(id: uuid.UUID = None, db: Session = None) -> ProductModel:
     try:
         with db as sess:
             db_product = sess.query(ProductModel).filter(ProductModel.id == id).first()
@@ -151,7 +153,9 @@ def get_products_by_form(form: str = None, db: Session = None) -> list[ProductMo
         raise Exception(f"Unhandled exception getting Products by form. Details: {exc}")
 
 
-def update_product_by_id(id: int = None, product: Product = None, db: Session = None):
+def update_product_by_id(
+    id: uuid.UUID = None, product: Product = None, db: Session = None
+):
     try:
         with db as sess:
             db_product: Query = (
@@ -203,7 +207,7 @@ def update_product_by_name(
         raise Exception(f"Unhandled exception updating Product by ID. Details: {exc}")
 
 
-def delete_product_by_id(id: int = None, db: Session = None):
+def delete_product_by_id(id: uuid.UUID = None, db: Session = None):
     try:
         with db as sess:
             db_product = sess.query(ProductModel).filter(ProductModel.id == id).first()
