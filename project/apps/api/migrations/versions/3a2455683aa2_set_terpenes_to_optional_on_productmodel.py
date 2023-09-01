@@ -1,8 +1,8 @@
-"""Initial commit
+"""Set terpenes to optional on ProductModel
 
-Revision ID: e1c833ab705a
-Revises: 
-Create Date: 2023-08-31 00:29:32.780143
+Revision ID: 3a2455683aa2
+Revises: f0940b4419c2
+Create Date: 2023-09-01 01:21:36.956431
 
 """
 from typing import Sequence, Union
@@ -12,8 +12,8 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision: str = 'e1c833ab705a'
-down_revision: Union[str, None] = None
+revision: str = '3a2455683aa2'
+down_revision: Union[str, None] = 'f0940b4419c2'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 

@@ -161,7 +161,7 @@ class ProductBase(BaseModel):
     batchNumber: Optional[str] = Field(default=None)
     form: Optional[str] = Field(default=None)
     # cannabinoids: Optional[CannabinoidList] = Field(default=None)
-    terpenes: Optional[list[Terpene]] = Field(default=None)
+    terpenes: Optional[list[Terpene]] = []
     # notes: Optional[list[ProductNote]] = None
     # images: Optional[list[ProductImage]] = None
 
