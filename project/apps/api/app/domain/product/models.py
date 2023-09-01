@@ -10,10 +10,22 @@ import sqlalchemy as sa
 from sqlalchemy.sql import func
 
 from sqlalchemy.orm import Session, Mapped, mapped_column, relationship
-from sqlalchemy import ForeignKey
+from sqlalchemy import ForeignKey, Table, Column
 from red_utils.sqlalchemy_utils.custom_types import CompatibleUUID
 
 from loguru import logger as log
+
+
+## Association tables for relationship joins
+#  https://docs.sqlalchemy.org/en/20/orm/basic_relationships.html#many-to-many
+product_terpene_table = Table(
+    "product_terpene",
+    Base.metadata,
+    ## Bi-directional key many-to-many
+    #  https://docs.sqlalchemy.org/en/20/orm/basic_relationships.html#setting-bi-directional-many-to-many
+    Column("product_id", ForeignKey("product.id"), primary_key=True),
+    Column("terpene_id", ForeignKey("terpene.id"), primary_key=True),
+)
 
 
 class ProductModel(Base):
@@ -21,7 +33,6 @@ class ProductModel(Base):
 
     type_annotation_map = {uuid.UUID: CompatibleUUID}
 
-    # id: Mapped[int] = mapped_column(sa.Integer, primary_key=True)
     id: Mapped[uuid.UUID] = mapped_column(
         primary_key=True, index=True, insert_default=uuid.uuid4
     )
@@ -43,8 +54,12 @@ class ProductModel(Base):
     form: Mapped[str] = mapped_column(sa.String, index=True)
 
     ## Relationships
-    terpenes: Mapped[list["TerpeneModel"]] = relationship(
-        "TerpeneModel", lazy="joined", cascade="all, delete-orphan"
+    #  https://docs.sqlalchemy.org/en/20/orm/basic_relationships.html#many-to-many
+    terpenes: Mapped[Optional[List["TerpeneModel"]]] = relationship(
+        secondary=product_terpene_table,
+        back_populates="products",
+        lazy="joined",
+        cascade="all",
     )
 
 
@@ -61,4 +76,7 @@ class TerpeneModel(Base):
         sa.Float(precision=3, asdecimal=True, decimal_return_scale=4)
     )
 
-    product_id: Mapped[uuid.UUID] = mapped_column(ForeignKey("product.id"))
+    ## Relationships
+    products: Mapped[List["ProductModel"]] = relationship(
+        secondary=product_terpene_table, back_populates="terpenes"
+    )

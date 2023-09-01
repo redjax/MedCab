@@ -12,5 +12,23 @@
     "testedDate": "2023-05-11",
     "packageDate": "2023-05-18",
     "batchNumber": "1A40715000024B9000000629",
-    "form": "flower"
+    "form": "flower",
+    "terpenes": [
+        {
+            "name": "delta-limonene",
+            "content": 1.290
+        },
+        {
+            "name": "linalool",
+            "content": 0.378
+        },
+        {
+            "name": "beta-myrcene",
+            "content": 0.342
+        },
+        {
+            "name": "beta-pinene/sabinene",
+            "content": 0.164
+        }
+    ]
 }
