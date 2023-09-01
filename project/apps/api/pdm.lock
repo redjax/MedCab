@@ -283,7 +283,7 @@ summary = "Read key-value pairs from a .env file and set them as environment var
 
 [[package]]
 name = "red-utils"
-version = "0.1.16"
+version = "0.1.17"
 requires_python = ">=3.11"
 summary = "Collection of utility scripts/functions that I use frequently."
 dependencies = [
@@ -889,9 +889,9 @@ content_hash = "sha256:d2eb12084b2b2b44297f0281d7c7c557fb80d03b783609a9ffbe42da3
     {url = "https://files.pythonhosted.org/packages/31/06/1ef763af20d0572c032fa22882cfbfb005fba6e7300715a37840858c919e/python-dotenv-1.0.0.tar.gz", hash = "sha256:a8df96034aae6d2d50a4ebe8216326c61c3eb64836776504fcca410e5937a3ba"},
     {url = "https://files.pythonhosted.org/packages/44/2f/62ea1c8b593f4e093cc1a7768f0d46112107e790c3e478532329e434f00b/python_dotenv-1.0.0-py3-none-any.whl", hash = "sha256:f5971a9226b701070a4bf2c38c89e5a3f0d64de8debda981d1db98583009122a"},
 ]
-"red-utils 0.1.16" = [
-    {url = "https://files.pythonhosted.org/packages/9b/de/ef80fd3ec81368d557ef243055014eabc4ba66ed18922054c1178f005f2d/red_utils-0.1.16.tar.gz", hash = "sha256:f93de4026976c90167f3f770ccceca3983960002a65701c9d4702131a6e301db"},
-    {url = "https://files.pythonhosted.org/packages/a3/0f/e32cb1455aefba5d48b5264fec55824dfcaa722ad0a87ce9cd37d2aec1c8/red_utils-0.1.16-py3-none-any.whl", hash = "sha256:6e77b1d00e36df751296988d1bae9208d89084b252c8faf80c506dc1f69866b5"},
+"red-utils 0.1.17" = [
+    {url = "https://files.pythonhosted.org/packages/06/94/f4921f09f62be9aee4286d8a9219552abf2a41c7b91a57517c68cccfe041/red_utils-0.1.17.tar.gz", hash = "sha256:0465cfb0bb9b935231f4ecd4c57206e0cb981c3658428bcd17d43c0529478c8a"},
+    {url = "https://files.pythonhosted.org/packages/38/0f/f2db2b1345d70df04cf6547143ec6a852e20f2ae3a4ade10d16931f2aaf3/red_utils-0.1.17-py3-none-any.whl", hash = "sha256:afc212fea2b15a66ec811763780626310fd02e83ddc42b382bc16d1b493cccb5"},
 ]
 "ruff 0.0.286" = [
     {url = "https://files.pythonhosted.org/packages/01/81/6ee7fab0e11c193cdb3e80810fc2adb5d00aaeecb5ed4fa12603cf99bad3/ruff-0.0.286-py3-none-musllinux_1_2_aarch64.whl", hash = "sha256:d73cfb1c3352e7aa0ce6fb2321f36fa1d4a2c48d2ceac694cb03611ddf0e4db6"},
