@@ -34,6 +34,9 @@ check = { cmd = "black ." }
 #  Check and fix
 format = { cmd = "ruff check . --fix" }
 
+## Create initial commit
+alembic-init = {cmd = "alembic revision -m 'Initial commit.'"}
+
 ## Upgrade Alembic head after making model changes
 alembic-upgrade = {cmd = "alembic upgrade head" }
 
