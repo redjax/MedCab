@@ -14,6 +14,7 @@ from pydantic import BaseModel
 # from settings.config import app_settings, logging_settings
 from config import settings
 from red_utils.loguru_utils import init_logger
+from red_utils.fastapi_utils import setup_uvicorn_logging
 import uvicorn
 
 ENV: str = settings.ENV
@@ -21,12 +22,16 @@ CONTAINER_ENV: bool = settings.CONTAINER_ENV
 
 if CONTAINER_ENV:
     env_string: str = f"[env:{ENV.upper()} (container)]"
+    log_level_string: str = f"{settings.level}"
 else:
     env_string: str = f"[env:{ENV.upper()}]"
+    log_level_string: str = settings.logging["level"]
 
 if __name__ == "__main__":
     ## If this file was run directly, initialize logger.
     init_logger()
+    ## Configure Uvicorn logging
+    setup_uvicorn_logging(level=log_level_string)
 
 
 class UvicornCustomServer(BaseModel):
