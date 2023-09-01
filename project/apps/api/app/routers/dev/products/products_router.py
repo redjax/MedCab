@@ -39,6 +39,22 @@ def get_all_products_from_db(db: crud.Session = Depends(get_db)):
     return all_products
 
 
+@router.get("/count", summary="Get count of Products in database")
+def get_count_products_from_db(db: crud.Session = Depends(get_db)):
+    """Return count of all Products from db."""
+    product_count: int = crud.count_product(db=db)
+
+    if not product_count:
+        return JSONResponse(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content={"error": "No Products found in database, or an error occurred"},
+        )
+
+    return JSONResponse(
+        status_code=status.HTTP_200_OK, content={"count": product_count}
+    )
+
+
 @router.get("/name/{name}", summary="Retrieve Product by name")
 def get_product_from_db_by_name(name: str = None, db: crud.Session = Depends(get_db)):
     # name: str = name.title()

@@ -4,6 +4,7 @@ from .schemas import ProductCreate, Product
 from .models import ProductModel
 
 from sqlalchemy.orm import Session, Query
+from sqlalchemy import func
 
 from constants import valid_strains, valid_forms
 
@@ -34,6 +35,19 @@ def validate_product_create(product) -> ProductCreate:
         )
 
     return product
+
+
+def count_product(db: Session = None) -> int:
+    try:
+        with db as sess:
+            product_count = sess.query(func.count(ProductModel.id)).scalar()
+
+            return product_count
+    except Exception as exc:
+        log.error(
+            f"Unhandled exception getting count of Products in database. Details: {exc}"
+        )
+        return None
 
 
 def create_product(product: ProductCreate = None, db: Session = None) -> ProductModel:
