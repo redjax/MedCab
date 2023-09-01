@@ -9,6 +9,8 @@ from loguru import logger as log
 
 from constants import valid_forms, valid_strains
 
+from .models import ProductModel, TerpeneModel
+
 
 class CannabinoidTerpeneBase(BaseModel):
     name: str = Field(default=None)
@@ -71,6 +73,9 @@ class CannabinoidList(CannabinoidListBase):
 class TerpeneBase(CannabinoidTerpeneBase):
     name: str = Field(default=None)
     content: float = Field(default=0.0)
+
+    class Meta:
+        orm_model = TerpeneModel
 
 
 class TerpeneCreate(CannabinoidTerpeneBase):
@@ -156,7 +161,7 @@ class ProductBase(BaseModel):
     batchNumber: Optional[str] = Field(default=None)
     form: Optional[str] = Field(default=None)
     # cannabinoids: Optional[CannabinoidList] = Field(default=None)
-    # terpenes: Optional[list[Terpene]] = Field(default=None)
+    terpenes: Optional[list[Terpene]] = []
     # notes: Optional[list[ProductNote]] = None
     # images: Optional[list[ProductImage]] = None
 
@@ -187,6 +192,9 @@ class ProductBase(BaseModel):
                 raise ValidationError
 
         return v
+
+    class Meta:
+        orm_model = ProductModel
 
 
 class ProductCreate(ProductBase):

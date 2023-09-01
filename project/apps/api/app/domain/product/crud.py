@@ -4,10 +4,13 @@ from .schemas import ProductCreate, Product
 from .models import ProductModel
 
 from sqlalchemy.orm import Session, Query
+from sqlalchemy import func
 
 from constants import valid_strains, valid_forms
 
 from loguru import logger as log
+
+from lib.parse_schema import parse_pydantic_schema
 
 
 def validate_db(db: Session = None) -> Session:
@@ -34,6 +37,19 @@ def validate_product_create(product) -> ProductCreate:
     return product
 
 
+def count_product(db: Session = None) -> int:
+    try:
+        with db as sess:
+            product_count = sess.query(func.count(ProductModel.id)).scalar()
+
+            return product_count
+    except Exception as exc:
+        log.error(
+            f"Unhandled exception getting count of Products in database. Details: {exc}"
+        )
+        return None
+
+
 def create_product(product: ProductCreate = None, db: Session = None) -> ProductModel:
     validate_db(db)
 
@@ -50,8 +66,7 @@ def create_product(product: ProductCreate = None, db: Session = None) -> Product
             if db_product:
                 return False
             else:
-                dump_schema: dict = product.model_dump()
-                log.debug(f"Schema dump ({type(dump_schema)}): {dump_schema}")
+                dump_schema = parse_pydantic_schema(schema=product)
 
                 new_product: ProductModel = ProductModel(**dump_schema)
 

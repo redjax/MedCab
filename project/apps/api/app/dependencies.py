@@ -30,7 +30,7 @@ match db_type:
         raise Exception(f"Unknown DB_TYPE: {db_type}")
 
 engine = get_engine(connection=db_config, db_type=db_type, echo=True)
-SessionLocal = get_session(engine=engine)
+SessionLocal = get_session(engine=engine, autoflush=True)
 
 
 def get_db():

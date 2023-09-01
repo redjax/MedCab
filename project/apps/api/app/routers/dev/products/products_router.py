@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import uuid
 
 from pathlib import Path
 from typing import Optional
@@ -38,6 +39,22 @@ def get_all_products_from_db(db: crud.Session = Depends(get_db)):
     return all_products
 
 
+@router.get("/count", summary="Get count of Products in database")
+def get_count_products_from_db(db: crud.Session = Depends(get_db)):
+    """Return count of all Products from db."""
+    product_count: int = crud.count_product(db=db)
+
+    if not product_count:
+        return JSONResponse(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content={"error": "No Products found in database, or an error occurred"},
+        )
+
+    return JSONResponse(
+        status_code=status.HTTP_200_OK, content={"count": product_count}
+    )
+
+
 @router.get("/name/{name}", summary="Retrieve Product by name")
 def get_product_from_db_by_name(name: str = None, db: crud.Session = Depends(get_db)):
     # name: str = name.title()
@@ -56,7 +73,7 @@ def get_product_from_db_by_name(name: str = None, db: crud.Session = Depends(get
 
 
 @router.get("/id/{id}", summary="Retrieve Product by id")
-def get_product_from_db_by_id(id: int = None, db: crud.Session = Depends(get_db)):
+def get_product_from_db_by_id(id: uuid.UUID = None, db: crud.Session = Depends(get_db)):
     db_product = crud.get_product_by_id(id=id, db=db)
 
     if not db_product:
@@ -119,7 +136,7 @@ def create_product_in_db(product: Product, db: crud.Session = Depends(get_db)):
 
 @router.post("/update/id/{id}", summary="Update a Product by ID")
 def update_product_in_db_by_id(
-    id: int = None, product: Product = None, db: crud.Session = Depends(get_db)
+    id: uuid.UUID = None, product: Product = None, db: crud.Session = Depends(get_db)
 ):
     db_product_update = crud.update_product_by_id(id=id, product=product, db=db)
 
@@ -148,7 +165,7 @@ def update_product_in_db_by_name(
 
 
 @router.delete("/id/{id}", summary="Delete a Product by ID")
-def delete_product_from_db_by_id(id: int, db: crud.Session = Depends(get_db)):
+def delete_product_from_db_by_id(id: uuid.UUID, db: crud.Session = Depends(get_db)):
     _deleted = crud.delete_product_by_id(id=id, db=db)
 
     if not _deleted:
