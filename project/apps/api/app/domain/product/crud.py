@@ -9,6 +9,8 @@ from constants import valid_strains, valid_forms
 
 from loguru import logger as log
 
+from lib.parse_schema import parse_pydantic_schema
+
 
 def validate_db(db: Session = None) -> Session:
     if not db:
@@ -50,8 +52,7 @@ def create_product(product: ProductCreate = None, db: Session = None) -> Product
             if db_product:
                 return False
             else:
-                dump_schema: dict = product.model_dump()
-                log.debug(f"Schema dump ({type(dump_schema)}): {dump_schema}")
+                dump_schema = parse_pydantic_schema(schema=product)
 
                 new_product: ProductModel = ProductModel(**dump_schema)
 
