@@ -7,6 +7,23 @@ from loguru import logger as log
 from config import settings
 
 
+ENV: str = settings.ENV
+CONTAINER_ENV: bool = settings.CONTAINER_ENV
+
+if CONTAINER_ENV:
+    env_string: str = f"[env:{ENV.upper()} (container)]"
+    log_level_string: str = f"{settings.level}"
+else:
+    env_string: str = f"[env:{ENV.upper()}]"
+    log_level_string: str = settings.logging["level"]
+
+if CONTAINER_ENV:
+    env_string: str = f"[env:{ENV.upper()} (container)]"
+    log_level_string: str = f"{settings.level}"
+else:
+    env_string: str = f"[env:{ENV.upper()}]"
+    log_level_string: str = settings.logging["level"]
+
 valid_strains: list[str] = ["indica", "hybrid", "sativa", "unknown"]
 valid_forms: list[str] = [
     "vape",
