@@ -12,5 +12,27 @@
     "testedDate": "2022-12-20",
     "packageDate": "2023-02-22",
     "batchNumber": "1A4071500002CED000000333",
-    "form": "flower"
+    "form": "flower",
+    "terpenes": [
+        {
+            "name": "limonene",
+            "content": 0.54
+        },
+        {
+            "name": "myrcene",
+            "content": 0.52
+        },
+        {
+            "name": "caryophyllene",
+            "content": 0.2
+        },
+        {
+            "name": "linalool",
+            "content": 0.14
+        },
+        {
+            "name": "pinene",
+            "content": 0.11
+        }
+    ]
 }

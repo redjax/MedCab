@@ -22,7 +22,9 @@ else:
     from routers.prod import prod_router
 
 
-router = APIRouter(responses={404: {"description": "Not found"}})
+router = APIRouter(
+    prefix=default_api_str, responses={404: {"description": "Not found"}}
+)
 
 ## Include sub-routers
 #  router.include_router(xxx_router.router)
