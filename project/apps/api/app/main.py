@@ -28,6 +28,7 @@ from red_utils.fastapi_utils import (
     fix_api_docs,
 )
 from red_utils.loguru_utils import init_logger
+from red_utils.fastapi_utils import setup_uvicorn_logging
 
 from constants import (
     ENV,
@@ -36,15 +37,17 @@ from constants import (
     app_title,
     app_description,
     app_version,
+    log_level_string,
 )
 
 from dependencies import Base, create_base_metadata, engine, db_config
 
 from domain.product import ProductModel
 
-init_logger()
-
 from routers import api_router
+
+init_logger()
+setup_uvicorn_logging(level=log_level_string)
 
 create_base_metadata(Base(), engine=engine)
 

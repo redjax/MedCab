@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import uuid
 
 from pathlib import Path
 from typing import Optional
@@ -56,7 +57,7 @@ def get_product_from_db_by_name(name: str = None, db: crud.Session = Depends(get
 
 
 @router.get("/id/{id}", summary="Retrieve Product by id")
-def get_product_from_db_by_id(id: int = None, db: crud.Session = Depends(get_db)):
+def get_product_from_db_by_id(id: uuid.UUID = None, db: crud.Session = Depends(get_db)):
     db_product = crud.get_product_by_id(id=id, db=db)
 
     if not db_product:
@@ -119,7 +120,7 @@ def create_product_in_db(product: Product, db: crud.Session = Depends(get_db)):
 
 @router.post("/update/id/{id}", summary="Update a Product by ID")
 def update_product_in_db_by_id(
-    id: int = None, product: Product = None, db: crud.Session = Depends(get_db)
+    id: uuid.UUID = None, product: Product = None, db: crud.Session = Depends(get_db)
 ):
     db_product_update = crud.update_product_by_id(id=id, product=product, db=db)
 
@@ -148,7 +149,7 @@ def update_product_in_db_by_name(
 
 
 @router.delete("/id/{id}", summary="Delete a Product by ID")
-def delete_product_from_db_by_id(id: int, db: crud.Session = Depends(get_db)):
+def delete_product_from_db_by_id(id: uuid.UUID, db: crud.Session = Depends(get_db)):
     _deleted = crud.delete_product_by_id(id=id, db=db)
 
     if not _deleted:
