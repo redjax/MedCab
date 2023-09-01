@@ -242,3 +242,25 @@ def delete_product_by_id(id: uuid.UUID = None, db: Session = None):
         raise Exception(
             f"Unhandled exception deleting Product with ID: {id}. Details: {exc}"
         )
+
+
+def delete_all_products(db: Session = None):
+    try:
+        with db as sess:
+            db_products = sess.query(ProductModel).all()
+
+            if not db_products:
+                log.warning(f"No products in the database")
+
+                return False
+
+            for product in db_products:
+                sess.delete(product)
+
+            sess.commit()
+
+            return db_products
+
+    except Exception as exc:
+        log.error(f"Unhandled exception deleting all Products. Details: {exc}")
+        return False
