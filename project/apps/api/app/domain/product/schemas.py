@@ -227,7 +227,7 @@ class ProductUpdate(ProductBase):
     batchNumber: str | None = None
     form: str | None = None
     # cannabinoids: CannabinoidList | None = None
-    # terpenes: list[Terpene] | None = None
+    terpenes: list[Terpene] | None = None
     # notes: list[ProductNote] | None = None
     # images: list[ProductImage] | None = None
 
