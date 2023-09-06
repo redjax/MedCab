@@ -172,3 +172,18 @@ def delete_product_from_db_by_id(id: uuid.UUID, db: crud.Session = Depends(get_d
         return JSONResponse(status_code=404, content=f"No Product exists with ID: {id}")
 
     return JSONResponse(status_code=202, content=f"Deleted Product with ID: {id}")
+
+
+@router.delete("/all", summary="Delete all Products")
+def delete_all_products_from_db(db: crud.Session = Depends(get_db)):
+    _deleted = crud.delete_all_products(db=db)
+
+    if not _deleted:
+        return JSONResponse(
+            status_code=404, content=f"No Products exist in the database"
+        )
+
+    return JSONResponse(
+        status_code=202,
+        content=f"Deleted all Products. Number of deleted records: {len(_deleted)}",
+    )

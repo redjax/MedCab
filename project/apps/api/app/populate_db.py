@@ -241,6 +241,53 @@ def load_data_into_db(
     return return_obj
 
 
+def remove_all_items() -> bool:
+    remove_choice: str = input("Remove all Products from the database? [Y/N]: ")
+    url: str = f"{api.base_api_url}/products/all"
+
+    delete_client: httpx.Client = get_req_client(headers=default_headers)
+
+    if remove_choice in ["Y", "y"]:
+        _confirm = input(
+            "Confirm you want to delete all Products from the database [Y/N]: "
+        )
+
+        if _confirm in ["Y", "y"]:
+            try:
+                with delete_client as c:
+                    res = c.delete(url)
+                    log.debug(
+                        f"Delete all Products response: [{res.status_code}: {res.reason_phrase}]: {res.text}"
+                    )
+
+                    if res.status_code in [200, 202]:
+                        log.info("Successfully deleted all Products.")
+                        return True
+                    elif res.status_code == 404:
+                        log.warning("No Products exist in database")
+                        return True
+                    else:
+                        log.error(f"Error deleting all Products.")
+                        return False
+            except Exception as exc:
+                log.error(
+                    Exception(
+                        f"Unhandled exception deleting all Products. Details: {exc}"
+                    )
+                )
+                return False
+        elif _confirm in ["N", "n"]:
+            log.info(f"Skipping deleteion")
+
+            return False
+    elif remove_choice in ["N", "n"]:
+        log.info("Skipping deletion")
+        return False
+    else:
+        log.error(f"Invalid choice: {remove_choice}")
+        remove_all_items()
+
+
 log.info(f"Loading products from {example_products}")
 products = load_json_data_objs(search_path=example_products)
 log.info(f"Loaded [{len(products)}] products into dicts")
@@ -253,3 +300,5 @@ log.info(f"Connection success: [{connectivity}]")
 log.info(f"Populating database with [{len(products)}] products")
 load_success = load_data_into_db(client=client, data=products)
 log.debug(f"Load success ({type(load_success)}): {load_success}")
+
+_remove = remove_all_items()
