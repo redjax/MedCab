@@ -7,7 +7,7 @@ from pydantic import BaseModel, Field, validator, ValidationError
 from constants import valid_forms, valid_strains
 
 
-from .schemas import Terpene
+from domain.product.schemas import Terpene
 
 
 class ProductBase(BaseModel):
