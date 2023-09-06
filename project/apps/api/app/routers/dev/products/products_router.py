@@ -55,17 +55,17 @@ def get_count_products_from_db(db: crud.Session = Depends(get_db)):
     )
 
 
-@router.get("/name/{name}", summary="Retrieve Product by name")
-def get_product_from_db_by_name(name: str = None, db: crud.Session = Depends(get_db)):
-    # name: str = name.title()
-
-    db_product = crud.get_product_by_name(name=name, db=db)
+@router.get("/strain/{strain_name}", summary="Retrieve Product by strin name")
+def get_product_from_db_by_strain(
+    strain_name: str = None, db: crud.Session = Depends(get_db)
+):
+    db_product = crud.get_product_by_strain(strain_name=strain_name, db=db)
 
     if not db_product:
         return JSONResponse(
             status_code=status.HTTP_404_NOT_FOUND,
             content={
-                "error": f"Product not found by name {name}. Note: Names in the database are case sensitive."
+                "error": f"Product not found by name {strain_name}. Note: Names in the database are case sensitive."
             },
         )
 
@@ -87,14 +87,16 @@ def get_product_from_db_by_id(id: uuid.UUID = None, db: crud.Session = Depends(g
     return db_product
 
 
-@router.get("/strain/{strain}", summary="Retrieve Products by strain")
-def get_products_from_db_by_strain(strain: str, db: crud.Session = Depends(get_db)):
-    db_products = crud.get_products_by_strain(strain=strain, db=db)
+@router.get(
+    "/family/{family}", summary="Retrieve Products by family (indica, sativa, hybrid)"
+)
+def get_products_from_db_by_strain(family: str, db: crud.Session = Depends(get_db)):
+    db_products = crud.get_products_by_family(family=family, db=db)
 
     if not db_products:
         return JSONResponse(
             status_code=status.HTTP_404_NOT_FOUND,
-            content={"error": f"Could not find any Products by strain: {strain}"},
+            content={"error": f"Could not find any Products by strain: {family}"},
         )
 
     return db_products
@@ -127,7 +129,7 @@ def create_product_in_db(product: Product, db: crud.Session = Depends(get_db)):
         return JSONResponse(
             status_code=status.HTTP_409_CONFLICT,
             content={
-                "warning": f"Product [{product.name}] already exists in the database"
+                "warning": f"Product [{product.strain}] already exists in the database"
             },
         )
 
@@ -149,16 +151,18 @@ def update_product_in_db_by_id(
     return db_product_update
 
 
-@router.post("/update/name/{name}", summary="Update a Product by name")
+@router.post("/update/strain/{strain_name}", summary="Update a Product by strain name")
 def update_product_in_db_by_name(
-    name: str = None, product: Product = None, db: crud.Session = Depends(get_db)
+    strain_name: str = None, product: Product = None, db: crud.Session = Depends(get_db)
 ):
-    db_product_update = crud.update_product_by_name(name=name, product=product, db=db)
+    db_product_update = crud.update_product_by_strain(
+        strain_name=strain_name, product=product, db=db
+    )
 
     if not db_product_update:
         return JSONResponse(
             status_code=status.HTTP_404_NOT_FOUND,
-            content={"error": f"Product not found by name: {name}"},
+            content={"error": f"Product not found by name: {strain_name}"},
         )
 
     return db_product_update
