@@ -4,9 +4,9 @@ from .schemas import ProductCreate, Product
 from .models import ProductModel
 
 from sqlalchemy.orm import Session, Query
-from sqlalchemy import func
+from sqlalchemy import func, select
 
-from constants import valid_strains, valid_forms
+from constants import valid_families, valid_forms
 
 from loguru import logger as log
 
@@ -57,15 +57,29 @@ def create_product(product: ProductCreate = None, db: Session = None) -> Product
 
     try:
         with db as sess:
-            db_product: Query = (
-                sess.query(ProductModel)
-                .where(ProductModel.name == product.name)
-                .first()
+            # db_product: Query = (
+            #     sess.query(ProductModel)
+            #     .where(ProductModel.strain == product.strain)
+            #     .first()
+            # )
+
+            ## Placeholder object for db_product. If no matching Product
+            #  is found in the database, this will stay None
+            db_product: ProductModel | None = None
+
+            log.debug(f"Building SELECT statement on .strain")
+            db_product_sel = select(ProductModel).where(
+                ProductModel.strain == product.strain
+            )
+            log.debug(f"Executing SELECT ProductModel statement")
+            db_products: list[ProductModel] = sess.execute(db_product_sel).all()
+            log.debug(
+                f"Results: ({type(db_products)}) [items:{len(db_products)}]: {db_products}"
             )
 
-            if db_product:
-                return False
-            else:
+            if db_products is None:
+                log.debug(f"No matching strain found for '{product.strain}. Creating.")
+
                 dump_schema = parse_pydantic_schema(schema=product)
 
                 new_product: ProductModel = ProductModel(**dump_schema)
@@ -74,6 +88,40 @@ def create_product(product: ProductCreate = None, db: Session = None) -> Product
                 sess.commit()
 
                 return new_product
+
+            else:
+                log.debug(
+                    f"Found [{len(db_products)}] products with strain name: {product.strain}"
+                )
+
+                for _product in db_products:
+                    log.debug(f"Product:\nStrain: {_product.strain}")
+
+                    if not _product.form == product.form:
+                        pass
+                    else:
+                        log.debug(
+                            f"Product [{product.strain}] in form {product.form} already exists"
+                        )
+
+                        db_product: ProductModel = _product
+
+                if db_product is None:
+                    log.debug(
+                        f"Product [{product.strain}] in form {product.form} not found in database. Creating."
+                    )
+
+                    dump_schema = parse_pydantic_schema(schema=product)
+
+                    new_product: ProductModel = ProductModel(**dump_schema)
+
+                    sess.add(new_product)
+                    sess.commit()
+
+                    return new_product
+
+                else:
+                    return db_product
 
     except Exception as exc:
         raise Exception(f"Unhandled exception creating Product. Details: {exc}")
@@ -105,40 +153,44 @@ def get_product_by_id(id: uuid.UUID = None, db: Session = None) -> ProductModel:
         )
 
 
-def get_product_by_name(name: str = None, db: Session = None) -> ProductModel:
-    if not name:
+def get_product_by_strain(strain_name: str = None, db: Session = None) -> ProductModel:
+    if not strain_name:
         raise ValueError("Missing a name to search")
 
-    if not isinstance(name, str):
-        raise ValueError(f"Invalid type for name: {type(name)}. Must be of type str")
+    if not isinstance(strain_name, str):
+        raise ValueError(
+            f"Invalid type for name: {type(strain_name)}. Must be of type str"
+        )
 
     try:
         with db as sess:
             db_product = (
-                sess.query(ProductModel).where(ProductModel.name == name).first()
+                sess.query(ProductModel)
+                .where(ProductModel.strain == strain_name)
+                .first()
             )
 
             return db_product
 
     except Exception as exc:
         raise Exception(
-            f"Unhandled exception retrieving Product by name '{name}'. Details: {exc}"
+            f"Unhandled exception retrieving Product by name '{strain_name}'. Details: {exc}"
         )
 
 
-def get_products_by_strain(
-    strain: str = None, db: Session = None
+def get_products_by_family(
+    family: str = None, db: Session = None
 ) -> list[ProductModel]:
-    if not strain:
+    if not family:
         raise ValueError(f"Missing strain")
 
-    if not strain in valid_strains:
-        raise ValueError(f"Invalid strain: {strain}. Must be one of: {valid_strains}")
+    if not family in valid_families:
+        raise ValueError(f"Invalid strain: {family}. Must be one of: {valid_families}")
 
     try:
         with db as sess:
             db_products: list[ProductModel] = (
-                sess.query(ProductModel).where(ProductModel.strain == strain).all()
+                sess.query(ProductModel).where(ProductModel.family == family).all()
             )
 
             return db_products
@@ -195,13 +247,15 @@ def update_product_by_id(
         raise Exception(f"Unhandled exception updating Product by ID. Details: {exc}")
 
 
-def update_product_by_name(
-    name: str = None, product: Product = None, db: Session = None
+def update_product_by_strain(
+    strain_name: str = None, product: Product = None, db: Session = None
 ):
     try:
         with db as sess:
             db_product: Query = (
-                sess.query(ProductModel).filter(ProductModel.name == name).first()
+                sess.query(ProductModel)
+                .filter(ProductModel.strain == strain_name)
+                .first()
             )
 
             if not db_product:
@@ -209,7 +263,7 @@ def update_product_by_name(
 
             update_data = product.model_dump(exclude_unset=True)
 
-            sess.query(ProductModel).filter(ProductModel.name == name).update(
+            sess.query(ProductModel).filter(ProductModel.strain == strain_name).update(
                 update_data, synchronize_session=False
             )
 
