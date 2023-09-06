@@ -24,7 +24,7 @@ else:
     env_string: str = f"[env:{ENV.upper()}]"
     log_level_string: str = settings.logging["level"]
 
-valid_strains: list[str] = ["indica", "hybrid", "sativa", "unknown"]
+valid_families: list[str] = ["indica", "hybrid", "sativa", "unknown"]
 valid_forms: list[str] = [
     "vape",
     "vaporizer",
@@ -46,8 +46,6 @@ valid_forms: list[str] = [
 ###############
 # Environment #
 ###############
-ENV: str = settings.ENV
-CONTAINER_ENV: bool = settings.CONTAINER_ENV
 
 if CONTAINER_ENV:
     env_string: str = f"[env:{ENV.upper()} (container)]"
@@ -70,9 +68,9 @@ else:
     app_description = settings.fastapi["description"]
     app_version = str(settings.app["version"])
 
-    db_type = settings.db.db_type
-    db_host = settings.db.db_host
-    db_username = settings.db.db_username
-    db_password = settings.db.db_password
-    db_db_port = settings.db.db_db_port
-    db_database = settings.db.db_database
+    db_type = settings.db["db_type"]
+    db_host = settings.db["db_host"]
+    db_username = settings.db["db_username"]
+    db_password = settings.db["db_password"]
+    db_port = settings.db["db_port"]
+    db_database = settings.db["db_database"]
