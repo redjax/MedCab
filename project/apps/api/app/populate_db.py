@@ -21,7 +21,7 @@ from red_utils.httpx_utils import (
 )
 
 example_schemas: Path = Path("example_schemas")
-example_products: Path = Path(f"{str(example_schemas)}/products")
+example_products: Path = Path(f"{str(example_schemas)}/products/simplified_for_testing")
 
 
 class APIServer(BaseModel):
@@ -164,12 +164,19 @@ def load_data_into_db(
     with client as c:
         try:
             for product in data:
+                # log.debug(f"Product dict ({type(product)}): {product}")
                 _json = json.dumps(product)
+                # log.debug(f"Product JSON ({type(_json)}): {_json}")
+
                 if not _json:
                     log.warning(
-                        f"JSON for product [{product['name']}] is empty. Skipping"
+                        f"JSON for product [{product['strain']}] is empty. Skipping"
                     )
                     pass
+
+                log.debug(
+                    f"Making POST request to create product '{product['strain']}'"
+                )
 
                 res = c.post(url, data=_json)
                 log.debug(
@@ -177,11 +184,11 @@ def load_data_into_db(
                 )
 
                 if res.status_code == 200:
-                    log.debug(f"Product [{product['name']}] created successfully.")
+                    log.debug(f"Product [{product['strain']}] created successfully.")
                     success_responses.append(res)
                 elif res.status_code == 409:
                     log.debug(
-                        f"Product [{product['name']}] already exists in database."
+                        f"Product [{product['strain']}] already exists in database."
                     )
                     success_responses.append(res)
                 elif res.status_code == 400:
@@ -189,7 +196,7 @@ def load_data_into_db(
                     non_success_responses.append(res)
                 elif res.status_code == 500:
                     log.error(
-                        f"Fatal server error on strain: [{product['name']}]. Response: [{res.status_code}: {res.reason_phrase}]: {res.text}"
+                        f"Fatal server error on strain: [{product['strain']}]. Response: [{res.status_code}: {res.reason_phrase}]: {res.text}"
                     )
                     non_success_responses.append(res)
                     time.sleep(0.01)
@@ -291,7 +298,7 @@ def remove_all_items() -> bool:
 log.info(f"Loading products from {example_products}")
 products = load_json_data_objs(search_path=example_products)
 log.info(f"Loaded [{len(products)}] products into dicts")
-# log.debug(f"Products: {products}")
+log.debug(f"Products: {products}")
 
 log.info(f"Testing connection to {api.healthcheck_url}")
 connectivity: bool = test_connection(client=connectivity_test_client)

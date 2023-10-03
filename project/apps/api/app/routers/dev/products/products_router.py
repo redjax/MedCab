@@ -1,6 +1,8 @@
 """API Router for Garlic endpoints."""
 from __future__ import annotations
 
+from typing import Union
+
 import json
 import uuid
 
@@ -122,7 +124,9 @@ def get_products_from_db_by_form(form: str, db: crud.Session = Depends(get_db)):
     response_model=Product,
     response_model_exclude_unset=True,
 )
-def create_product_in_db(product: Product, db: crud.Session = Depends(get_db)):
+def create_product_in_db(
+    product: Product, db: crud.Session = Depends(get_db)
+) -> Union[list[ProductModel], ProductModel]:
     db_product = crud.create_product(product=product, db=db)
 
     if not db_product:
@@ -134,6 +138,27 @@ def create_product_in_db(product: Product, db: crud.Session = Depends(get_db)):
         )
 
     return db_product
+
+    """
+
+    if isinstance(db_product, list):
+            return JSONResponse(
+                status_code=status.HTTP_409_CONFLICT,
+                content={
+                    "error": f"Product [{product.strain}] already exists in the database.",
+                    "data": db_product,
+                },
+            )
+        elif not db_product:
+            return JSONResponse(
+                status_code=status.HTTP_409_CONFLICT,
+                content={
+                    "warning": f"Product [{product.strain}] already exists in the database"
+                },
+            )
+        else:
+            return db_product
+    """
 
 
 @router.post("/update/id/{id}", summary="Update a Product by ID")

@@ -1,9 +1,11 @@
 import uuid
+from typing import Union
 
 from .schemas import ProductCreate, Product
 from .models import ProductModel
 
 from sqlalchemy.orm import Session, Query
+from sqlalchemy.engine.row import Row
 from sqlalchemy import func, select
 
 from constants import valid_families, valid_forms
@@ -72,7 +74,7 @@ def create_product(product: ProductCreate = None, db: Session = None) -> Product
                 ProductModel.strain == product.strain
             )
             log.debug(f"Executing SELECT ProductModel statement")
-            db_products: list[ProductModel] = sess.execute(db_product_sel).all()
+            db_products: list[Row] = sess.execute(db_product_sel).all()
             log.debug(
                 f"Results: ({type(db_products)}) [items:{len(db_products)}]: {db_products}"
             )
@@ -94,34 +96,41 @@ def create_product(product: ProductCreate = None, db: Session = None) -> Product
                     f"Found [{len(db_products)}] products with strain name: {product.strain}"
                 )
 
-                for _product in db_products:
-                    log.debug(f"Product:\nStrain: {_product.strain}")
+                return False
 
-                    if not _product.form == product.form:
-                        pass
-                    else:
-                        log.debug(
-                            f"Product [{product.strain}] in form {product.form} already exists"
-                        )
+                # for _product in db_products:
+                #     log.debug(f"Product ({type(_product)}): {_product}")
+                #     _product_dict = _product._tuple()
+                #     log.debug(f"As dict ({type(_product_dict)}): {_product_dict}")
 
-                        db_product: ProductModel = _product
+                # return db_products
 
-                if db_product is None:
-                    log.debug(
-                        f"Product [{product.strain}] in form {product.form} not found in database. Creating."
-                    )
+                # for _product in db_products:
+                #     if not _product.form == product.form:
+                #         pass
+                #     else:
+                #         log.debug(
+                #             f"Product [{product.strain}] in form {product.form} already exists"
+                #         )
 
-                    dump_schema = parse_pydantic_schema(schema=product)
+                #         db_product: ProductModel = _product
 
-                    new_product: ProductModel = ProductModel(**dump_schema)
+            # if db_product is None:
+            #     log.debug(
+            #         f"Product [{product.strain}] in form {product.form} not found in database. Creating."
+            #     )
 
-                    sess.add(new_product)
-                    sess.commit()
+            #     dump_schema = parse_pydantic_schema(schema=product)
 
-                    return new_product
+            #     new_product: ProductModel = ProductModel(**dump_schema)
 
-                else:
-                    return db_product
+            #     sess.add(new_product)
+            #     sess.commit()
+
+            #     return new_product
+
+            # else:
+            #     return db_product
 
     except Exception as exc:
         raise Exception(f"Unhandled exception creating Product. Details: {exc}")
