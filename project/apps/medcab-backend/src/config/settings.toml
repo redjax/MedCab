@@ -1,0 +1,30 @@
+[default]
+
+env = "prod"
+container_env = false
+
+log_level = "INFO"
+
+## Flask app settings
+app_name = "MedCab Backend"
+app_version = "0.1.0"
+app_description = "Backend for MedCab project"
+app_debug = false
+app_host = "0.0.0.0"
+app_port = 5000
+
+## Dict containing openweathermap API settings
+owm_settings = { "base_url" = "https://api.openweathermap.org/data/2.5" }
+
+[dev]
+
+env = "dev"
+
+log_level = "DEBUG"
+
+## Flask app settings
+app_name = "[dev] MedCab Backend"
+app_description = "Backend for MedCab project, development configuration"
+app_debug = true
+
+[prod]

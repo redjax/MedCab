@@ -1,0 +1,17 @@
+name: medcab-dev
+channels:
+  - nodefaults
+  - conda-forge
+variables:
+  ENV_FOR_DYNACONF: dev
+dependencies:
+  - python>=3.11
+  - pip
+  - attrs
+  - flask
+  - loguru
+  - sqlalchemy
+  - diskcache
+
+  - pip:
+      - red-utils

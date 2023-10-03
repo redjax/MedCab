@@ -1,28 +1,32 @@
 {
 	"folders": [
 		{
-			"name": "git_root",
+			"name": "Git Root",
 			"path": ".."
 		},
 		{
-			"name": "docker_root",
+			"name": "Docker Root",
 			"path": "../project"
 		},
 		{
-			"name": "docker_apps",
+			"name": "All Apps",
 			"path": "../project/apps"
 		},
+		// {
+		// 	"name": "docker/proxy",
+		// 	"path": "../project/apps/proxy/"
+		// },
+		// {
+		// 	"name": "docker/api",
+		// 	"path": "../project/apps/api/app"
+		// },
+		// {
+		// 	"name": "docker/frontend",
+		// 	"path": "../project/apps/frontend/app"
+		// }
 		{
-			"name": "docker/proxy",
-			"path": "../project/apps/proxy/"
-		},
-		{
-			"name": "docker/api",
-			"path": "../project/apps/api/app"
-		},
-		{
-			"name": "docker/frontend",
-			"path": "../project/apps/frontend/app"
+			"name": "MedCab Backend",
+			"path": "../project/apps/medcab-backend/"
 		}
 	],
 	"settings": {
