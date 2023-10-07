@@ -10,14 +10,13 @@ from dynaconf import settings
 from flask import Flask
 from flask.logging import default_handler
 
-from medcab_backend.constants import (
-    APP_DEBUG,
-    APP_HOST,
-    APP_PORT,
-    CONTAINER_ENV,
-    ENV,
-    owm_conf,
-)
+# from medcab_backend.constants import (
+#     APP_DEBUG,
+#     APP_HOST,
+#     APP_PORT,
+#     CONTAINER_ENV,
+#     ENV
+# )
 from medcab_backend.main import app
 
 # from medcab_backend.utils.flask_utils import setup_flask_logger
@@ -48,9 +47,9 @@ def get_free_port() -> int:
 @define
 class FlaskServer:
     flask_app: Flask = field(default=app)
-    flask_debug: bool = field(default=APP_DEBUG)
-    flask_host: str = field(default=APP_HOST)
-    flask_port: int = field(default=APP_PORT)
+    flask_debug: bool = field(default=settings.APP_DEBUG)
+    flask_host: str = field(default=settings.APP_HOST)
+    flask_port: int = field(default=settings.APP_PORT)
 
     def run_server(self):
         try:
@@ -68,8 +67,8 @@ if __name__ == "__main__":
     # setup_flask_logger(app=app)
     init_logger(sinks=[sinks.default_stdout_color_sink])
 
-    log.info(f"[{ENV}] Starting app")
-    log.info(f"[{ENV}] Settings: {settings.as_dict()}")
+    log.info(f"[env:{settings.ENV}|container:${settings.CONTAINER_ENV}] Starting app")
+    log.info(f"[env:{settings.ENV}] Settings: {settings.as_dict()}")
 
     server = FlaskServer()
 

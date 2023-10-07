@@ -13,7 +13,11 @@ from medcab_backend.constants import (
     APP_DESCRIPTION,
 )
 
+from medcab_backend.blueprints.product.views import products_app
+
 app = Flask(__name__)
+app.secret_key = settings.APP_SECRET_KEY
+app.register_blueprint(products_app, url_prefix="/products")
 
 
 @app.route("/", methods=["GET"])
