@@ -19,6 +19,7 @@ from loguru import logger as log
 
 from medcab_backend.domain.product import Product
 from medcab_backend.constants import ENV
+from medcab_backend.domain.product.validators import valid_families, valid_forms
 
 products_app = Blueprint("products", __name__)
 
@@ -35,7 +36,11 @@ def index() -> dict[str, str]:
 @products_app.route("/new", methods=["GET"])
 def new_product_page():
     return render_template(
-        "pages/products/new/index.html", app_env=ENV, page_name="new_product"
+        "pages/products/new/index.html",
+        app_env=ENV,
+        page_name="new_product",
+        valid_forms=valid_forms,
+        valid_families=valid_families,
     )
 
 

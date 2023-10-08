@@ -1,0 +1,26 @@
+<div class="container-fluid">
+
+    <form action="http://localhost:5000/products/new" method="POST" enctype="multipart/form-data">
+        <div class="row justify-content-center my-auto">
+            <!-- Product Name -->
+            <div class="col" id="productStrainNameText">
+                <div class="input-group mb-3">
+                    <span class="input-group-text text-bg-success" id="strainNameInputLabel">Strain Name</span>
+                    <input type="text" class="form-control" id="strainName">
+                </div>
+            </div>
+
+            <!-- Product family -->
+            <div class="col" id="productFamilyInput">
+                {% include "components/form/dropdown/product_family_dropdown.html" %}
+            </div>
+
+            <!-- Product Form -->
+            <div class="col" id="productFormInput">
+                {% include "components/form/dropdown/product_form_dropdown.html" %}
+
+            </div>
+        </div>
+    </form>
+
+</div>
