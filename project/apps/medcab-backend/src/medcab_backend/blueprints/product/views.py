@@ -18,6 +18,7 @@ import attrs
 from loguru import logger as log
 
 from medcab_backend.domain.product import Product
+from medcab_backend.constants import ENV
 
 products_app = Blueprint("products", __name__)
 
@@ -26,13 +27,16 @@ products_app = Blueprint("products", __name__)
 def index() -> dict[str, str]:
     if request.method == "GET":
         # return jsonify({"msg": "Products root reached"})
-        return render_template("pages/products/index.html")
+        return render_template(
+            "pages/products/index.html", app_env=ENV, page_name="products"
+        )
 
 
 @products_app.route("/new", methods=["GET"])
 def new_product_page():
-    # return render_template("pages/products/index.html")
-    return {"message": "New product page not yet implemented"}
+    return render_template(
+        "pages/products/new/index.html", app_env=ENV, page_name="new_product"
+    )
 
 
 @products_app.route("/new", methods=["POST"])

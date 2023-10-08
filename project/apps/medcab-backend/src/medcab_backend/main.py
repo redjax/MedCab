@@ -24,7 +24,7 @@ app.register_blueprint(products_app, url_prefix="/products")
 def index() -> dict[str, str]:
     log.debug(f"MedCab Backend root page reached")
     # return {"msg": f"{APP_NAME} v{APP_VERSION} reached"}
-    return render_template("pages/home/index.html")
+    return render_template("pages/index.html", app_env="dev", page_name="home")
 
 
 if __name__ == "__main__":
