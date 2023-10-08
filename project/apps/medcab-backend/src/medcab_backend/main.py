@@ -3,7 +3,7 @@ from dynaconf import settings
 from loguru import logger as log
 from red_utils.ext.loguru_utils import init_logger, sinks
 
-from flask import Flask
+from flask import Flask, render_template
 
 from medcab_backend.constants import (
     ENV,
@@ -23,7 +23,8 @@ app.register_blueprint(products_app, url_prefix="/products")
 @app.route("/", methods=["GET"])
 def index() -> dict[str, str]:
     log.debug(f"MedCab Backend root page reached")
-    return {"msg": f"{APP_NAME} v{APP_VERSION} reached"}
+    # return {"msg": f"{APP_NAME} v{APP_VERSION} reached"}
+    return render_template("pages/home/index.html")
 
 
 if __name__ == "__main__":
