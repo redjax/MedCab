@@ -20,38 +20,58 @@ import attrs
 from loguru import logger as log
 
 from medcab_backend.domain.product import Product
+from medcab_backend.domain.ui import PageNotificationGeneric
 from medcab_backend.constants import ENV
 from medcab_backend.domain.product.validators import valid_families, valid_forms
+
+import ast
 
 products_app = Blueprint("products", __name__)
 
 
 @products_app.route("/", methods=["GET"])
-def index() -> dict[str, str]:
+def index(notification: PageNotificationGeneric = None) -> dict[str, str]:
     if request.method == "GET":
-        # return jsonify({"msg": "Products root reached"})
+        # notification_dict = request.args.get("notification")
+
+        # if notification_dict is not None:
+        #     notification = PageNotificationGeneric(
+        #         **ast.literal_eval(notification_dict)
+        #     )
+        # else:
+        #     notification = None
+
         return render_template(
             "pages/products/index.html",
             app_env=ENV,
             page_name="products",
             valid_forms=valid_forms,
             valid_families=valid_families,
+            notification=notification,
         )
 
 
 @products_app.route("/new", methods=["GET"])
-def new_product_page():
+def new_product_page(notification: PageNotificationGeneric = None):
+    # notification_dict = request.args.get("notification")
+
+    # if notification_dict is not None:
+    #     notification = PageNotificationGeneric(**ast.literal_eval(notification_dict))
+    # else:
+    #     notification = None
+
     return render_template(
         "pages/products/new/index.html",
         app_env=ENV,
         page_name="new_product",
         valid_forms=valid_forms,
         valid_families=valid_families,
+        notification=notification,
     )
 
 
 @products_app.route("/new", methods=["post"])
-def create_new_product():
+def create_new_product(notification: PageNotificationGeneric = None):
     ## Check header type, handle application/json and multipart/form-data
     content_type = request.headers.get("Content-Type")
     log.info(f"Received POST request, content-type: {content_type}")
@@ -96,9 +116,20 @@ def create_new_product():
     ## Web form data
     elif "multipart/form-data" in content_type:
         log.debug(f"Web form data received. Attempting to parse as form")
+        # notification_dict = request.args.get("notification")
+
+        # log.debug(f"Notification dict ({type(notification_dict)}): {notification_dict}")
+
+        # if notification_dict is not None:
+        #     notification = PageNotificationGeneric(
+        #         **ast.literal_eval(notification_dict)
+        #     )
+        # else:
+        #     notification = None
 
         try:
             new_product_form = NewProductform(request.form)
+
         except Exception as exc:
             log.error(
                 Exception(
@@ -106,8 +137,13 @@ def create_new_product():
                 )
             )
 
-            # return redirect(request.form["previous_page"])
-            return redirect(url_for("products.index"))
+            notification = PageNotificationGeneric(
+                message="Unable to parse form input.",
+                display=True,
+                success=False,
+                data={"exception": exc},
+            )
+            return redirect(url_for("products.index", notification=notification))
 
         log.debug(f"Incoming product data: {new_product_form.data}")
         if new_product_form.errors:
@@ -118,17 +154,32 @@ def create_new_product():
                 new_product = Product(**new_product_form.data)
 
                 log.debug(f"New product: {new_product}")
+
+                notification = PageNotificationGeneric(
+                    f"Success: Added {new_product.strain}.", display=True, success=True
+                )
+
+                return redirect(
+                    url_for("products.new_product_page", notification=notification)
+                )
             else:
                 log.error(
                     f"Unable to validate new product form input. Details: {new_product_form.errors}"
                 )
 
-            # return redirect(request.form["previous_page"])
+            notification = PageNotificationGeneric(
+                message="Unable to parse form input into Product object.",
+                display=True,
+                success=False,
+                data={"details": new_product_form.errors},
+            )
+
             return redirect(
                 url_for(
                     "products.index",
                     valid_families=valid_families,
                     valid_forms=valid_forms,
+                    notification=notification,
                 )
             )
 
@@ -139,7 +190,16 @@ def create_new_product():
                 )
             )
 
-            return redirect(request.form["previous_page"])
+            notification = PageNotificationGeneric(
+                message="Form validation failed.",
+                display=True,
+                success=False,
+                data={"exception": exc},
+            )
+
+            return redirect(
+                url_for("products.new_product_page", notification=notification)
+            )
 
     ## Non JSON/web form data
     else:
