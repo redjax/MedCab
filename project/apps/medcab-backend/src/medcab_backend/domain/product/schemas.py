@@ -9,8 +9,8 @@ class ProductBase(BaseModel):
     strain: str | None = Field(default=None)
     family: str | None = Field(default=None)
     form: str | None = Field(default=None)
-    total_thc: Decimal = Field(default=0.0, max_digits=5, decimal_places=3)
-    total_cbd: Decimal = Field(default=0.0, max_digits=5, decimal_places=3)
+    total_thc: Decimal = Field(default=0.000, max_digits=5, decimal_places=3)
+    total_cbd: Decimal = Field(default=0.000, max_digits=5, decimal_places=3)
     # total_thc: Decimal | None = Field(default=0.0, max_digits=5, decimal_places=3)
     # total_cbd: Decimal | None = Field(default=0.0, max_digits=5, decimal_places=3)
 
@@ -29,6 +29,9 @@ class ProductBase(BaseModel):
     # terpenes: Optional[list[Terpene]] = []
     # notes: Optional[list[ProductNote]] = None
     # images: Optional[list[ProductImage]] = None
+
+    class Config:
+        validate_assignment = True
 
     @validator("family")
     def validate_strain(cls, v) -> str:
@@ -49,6 +52,14 @@ class ProductBase(BaseModel):
             raise ValidationError
 
         return v
+
+    @validator("total_thc")
+    def validate_total_thc(cls, v) -> Decimal:
+        return v or Decimal(0.0)
+
+    @validator("total_cbd")
+    def validate_total_cbd(cls, v) -> Decimal:
+        return v or Decimal(0.0)
 
 
 class Product(ProductBase):

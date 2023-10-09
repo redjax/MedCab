@@ -12,6 +12,7 @@ dependencies = [
     "attrs>=23.1.0",
     "sqlalchemy>=2.0.21",
     "pydantic>=2.4.2",
+    "Flask-WTF>=1.2.1",
 ]
 requires-python = ">=3.11"
 license = { text = "MIT" }
