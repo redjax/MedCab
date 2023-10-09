@@ -1,0 +1,6 @@
+<label for="newProductFamilySelect" class="form-label">Family</label>
+<select class="form-select" id="newProductFamilySelect" aria-label="Strain family dropdown select" name="family">
+    {% for family in valid_families %}
+    <option {% if family=='unknown' %}selected{% endif %} value="{{ family }}">{{ family|title }}</option>
+    {% endfor %}
+</select>

@@ -1,0 +1,6 @@
+<label for="newProductFormSelect" class="form-label">Form</label>
+<select class="form-select" id="newProductFormSelect" aria-label="Product form dropdown select" name="form">
+    {% for form in valid_forms %}
+    <option {% if form=='unknown' %}selected{% endif %} value="{{ form }}">{{ form|title }}</option>
+    {% endfor %}
+</select>

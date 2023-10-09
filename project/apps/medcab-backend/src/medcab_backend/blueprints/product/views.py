@@ -31,7 +31,11 @@ def index() -> dict[str, str]:
     if request.method == "GET":
         # return jsonify({"msg": "Products root reached"})
         return render_template(
-            "pages/products/index.html", app_env=ENV, page_name="products"
+            "pages/products/index.html",
+            app_env=ENV,
+            page_name="products",
+            valid_forms=valid_forms,
+            valid_families=valid_families,
         )
 
 
@@ -102,7 +106,8 @@ def create_new_product():
                 )
             )
 
-            return redirect(url_for("products.new_product_page"))
+            # return redirect(request.form["previous_page"])
+            return redirect(url_for("products.index"))
 
         log.debug(f"Incoming product data: {new_product_form.data}")
         if new_product_form.errors:
@@ -118,7 +123,14 @@ def create_new_product():
                     f"Unable to validate new product form input. Details: {new_product_form.errors}"
                 )
 
-            return redirect(url_for("products.new_product_page"))
+            # return redirect(request.form["previous_page"])
+            return redirect(
+                url_for(
+                    "products.index",
+                    valid_families=valid_families,
+                    valid_forms=valid_forms,
+                )
+            )
 
         except Exception as exc:
             log.error(
@@ -127,8 +139,17 @@ def create_new_product():
                 )
             )
 
-            return redirect(url_for("products.new_product_page"))
+            return redirect(request.form["previous_page"])
 
     ## Non JSON/web form data
     else:
-        return redirect(url_for("product.new_product_page"))
+        return Response(
+            jsonify(
+                {
+                    "response": NotImplementedError(
+                        f"Support for requests with Content-Type {content_type} not supported."
+                    )
+                },
+                status=501,
+            )
+        )

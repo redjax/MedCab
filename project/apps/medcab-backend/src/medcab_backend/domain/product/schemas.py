@@ -6,6 +6,7 @@ from .validators import valid_families, valid_forms
 
 
 class ProductBase(BaseModel):
+    favorite: bool = Field(default=False)
     strain: str | None = Field(default=None)
     family: str | None = Field(default=None)
     form: str | None = Field(default=None)
