@@ -50,13 +50,14 @@ def new_product_page():
 def create_new_product():
     ## Check header type, handle application/json and multipart/form-data
     content_type = request.headers.get("Content-Type")
-
     log.info(f"Received POST request, content-type: {content_type}")
 
+    ## Parse incoming JSON data, i.e. from an API call
     if content_type == "application/json":
         log.debug(f"Detected JSON data")
 
         try:
+            ## Convert to Product object
             product: Product = Product(**request.json)
             log.debug(f"Product: {product}")
 
@@ -70,6 +71,7 @@ def create_new_product():
                 )
             )
 
+            ## Return 400 malformed request
             return Response(
                 f"Unable to convert request to Product object. Request object may be misformed. Details: {type_err}",
                 status=400,
@@ -80,14 +82,16 @@ def create_new_product():
                 f"Unhandled exception converting request to Product object. Details: {exc}"
             )
 
+            ## Return 500 internal/unhandled server error
             return Response(
                 {"error": "Internal Server Error"},
                 status=500,
                 mimetype="application/json",
             )
 
-    else:
-        log.debug(f"Non-JSON data received. Attempting to parse as form")
+    ## Web form data
+    elif "multipart/form-data" in content_type:
+        log.debug(f"Web form data received. Attempting to parse as form")
 
         try:
             new_product_form = NewProductform(request.form)
@@ -125,39 +129,6 @@ def create_new_product():
 
             return redirect(url_for("products.new_product_page"))
 
-
-"""
-@products_app.route("/new", methods=["POST"])
-def create_new_product():
-    log.debug(f"Converting incoming request to Product object: {request.json}")
-
-    try:
-        product: Product = Product(**request.json)
-        log.debug(f"Product: {product}")
-
-        return Response(
-            product.model_dump_json(), status=201, mimetype="application/json"
-        )
-    except TypeError as type_err:
-        log.error(
-            TypeError(
-                f"TypeError converting incoming request to Product object. Details: {type_err}"
-            )
-        )
-
-        return Response(
-            f"Unable to convert request to Product object. Request object may be misformed. Details: {type_err}",
-            status=400,
-            mimetype="application/json",
-        )
-    except Exception as exc:
-        log.error(
-            f"Unhandled exception converting request to Product object. Details: {exc}"
-        )
-
-        return Response(
-            {"error": "Internal Server Error"},
-            status=500,
-            mimetype="application/json",
-        )
-"""
+    ## Non JSON/web form data
+    else:
+        return redirect(url_for("product.new_product_page"))
