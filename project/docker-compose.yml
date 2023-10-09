@@ -14,22 +14,27 @@ services:
     container_name: medcab_api
     restart: unless-stopped
     build:
-      context: apps/api
-      dockerfile: ${MEDCAB_API_DOCKERFILE:-Dockerfile}
+      context: apps/medcab-backend
+      dockerfile: ${BACKEND_DOCKERFILE:-Dockerfile}
     working_dir: /app
     command: python start_server.py
     volumes:
-      - ${MEDCAB_API_APP_DIR:-./apps/api/app}:/app
+      - ${BACKEND_APP_DIR:-./apps/medcab-backend/src}:/app
     ## Comment port definitions if using a proxy container
     ports:
-      - ${MEDCAB_API_PORT:-8000}:8000
+      - ${BACKEND_PORT:-5000}:5000
     environment:
-      DYNACONF_FASTAPI_TITLE: ${MEDCAB_API_APP_TITLE:-Default App Title}
-      DYNACONF_FASTAPI_DESCRIPTION: ${MEDCAB_API_APP_DESCRIPTION:-Default app description}
-      DYNACONF_FASTAPI_VERSION: ${MEDCAB_API_APP_VER:-"0.1"}
-      DYNACONF_LEVEL: ${MEDCAB_API_LOG_LEVEL:-INFO}
-      DYNACONF_ENV: ${MEDCAB_API_APP_ENV:-prod}
-      DYNACONF_CONTAINER_ENV: True
+      ENV_FOR_DYNACONF: ${BACKEND_APP_ENV:-prod}
+      BACKEND_ENV: ${BACKEND_APP_ENV:-prod}
+      BACKEND_CONTAINER_ENV: true
+      BACKEND_APP_NAME: ${BACKEND_APP_NAME:-Default App Name}
+      BACKEND_APP_DESCRIPTION: ${BACKEND_APP_DESCRIPTION:-Default app description}
+      BACKEND_APP_VERSION: ${BACKEND_APP_VER:-"0.1"}
+      BACKEND_APP_SECRET: ${BACKEND_APP_SECRET}
+      BACKEND_LOG_LEVEL: ${BACKEND_LOG_LEVEL:-INFO}
+      BACKEND_APP_DEBUG: ${BACKEND_APP_DEBUG:-false}
+      BACKEND_APP_HOST: ${BACKEND_APP_HOST:-"0.0.0.0"}
+      BACKEND_APP_PORT: ${BACKEND_APP_PORT:-5000}
 
       ## Database
       # DYNACONF_DB_TYPE: ${MEDCAB_API_DB_TYPE:-postgres}
@@ -39,12 +44,12 @@ services:
       # DYNACONF_DB_PORT: ${MEDCAB_API_DB_PORT:-5432}
       # DYNACONF_DB_DATABASE: ${MEDCAB_API_DB_DATABASE:-postgres}
 
-      DYNACONF_DB_TYPE: ${MEDCAB_API_DB_TYPE}
-      DYNACONF_DB_HOST: ${MEDCAB_API_DB_HOST}
-      DYNACONF_DB_USERNAME: ${MEDCAB_API_DB_USERNAME}
-      DYNACONF_DB_PASSWORD: ${MEDCAB_API_DB_PASSWORD}
-      DYNACONF_DB_PORT: ${MEDCAB_API_DB_PORT}
-      DYNACONF_DB_DATABASE: ${MEDCAB_API_DB_DATABASE}
+      # DYNACONF_DB_TYPE: ${MEDCAB_API_DB_TYPE}
+      # DYNACONF_DB_HOST: ${MEDCAB_API_DB_HOST}
+      # DYNACONF_DB_USERNAME: ${MEDCAB_API_DB_USERNAME}
+      # DYNACONF_DB_PASSWORD: ${MEDCAB_API_DB_PASSWORD}
+      # DYNACONF_DB_PORT: ${MEDCAB_API_DB_PORT}
+      # DYNACONF_DB_DATABASE: ${MEDCAB_API_DB_DATABASE}
     healthcheck:
       test: curl --fail http://backend:8000/health
       interval: 5m
@@ -55,20 +60,20 @@ services:
       - proxy_net
 
   ## Nginx
-  proxy:
-    image: nginx:latest
-    container_name: medcab_proxy
-    restart: unless-stopped
-    # env_file: ./env_files/nginx_proxy.env
-    volumes:
-      - ${NGINX_CONF_DIR:-./apps/proxy/nginx/nginx.conf}:/etc/nginx/nginx.conf
-      - ${NGINX_SITES_ENABLED_DIR:-./apps/proxy/nginx/conf/sites-enabled}:/etc/nginx/sites-enabled
-      - ${NGINX_CONF_EXTRA_DIR:-./apps/proxy/nginx/conf/extra}:/etc/nginx/extra
-      - ${NGINX_LOGS_DIR:-./apps/proxy/nginx/logs}:/var/log/nginx/
-      - ${NGINX_CACHE_DIR:-nginx_cache}:/data/nginx/cache
-    ports:
-      - ${NGINX_HTTP_PORT:-80}:80
-    environment:
-      BACKEND_SERVER: ${NGINX_BACKEND_SERVER:-127.0.0.1}
-    networks:
-      - proxy_net
+  # proxy:
+  #   image: nginx:latest
+  #   container_name: medcab_proxy
+  #   restart: unless-stopped
+  #   # env_file: ./env_files/nginx_proxy.env
+  #   volumes:
+  #     - ${NGINX_CONF_DIR:-./apps/proxy/nginx/nginx.conf}:/etc/nginx/nginx.conf
+  #     - ${NGINX_SITES_ENABLED_DIR:-./apps/proxy/nginx/conf/sites-enabled}:/etc/nginx/sites-enabled
+  #     - ${NGINX_CONF_EXTRA_DIR:-./apps/proxy/nginx/conf/extra}:/etc/nginx/extra
+  #     - ${NGINX_LOGS_DIR:-./apps/proxy/nginx/logs}:/var/log/nginx/
+  #     - ${NGINX_CACHE_DIR:-nginx_cache}:/data/nginx/cache
+  #   ports:
+  #     - ${NGINX_HTTP_PORT:-80}:80
+  #   environment:
+  #     BACKEND_SERVER: ${NGINX_BACKEND_SERVER:-127.0.0.1}
+  #   networks:
+  #     - proxy_net

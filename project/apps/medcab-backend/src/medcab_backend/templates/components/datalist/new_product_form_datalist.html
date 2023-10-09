@@ -1,0 +1,11 @@
+<label for="newProductFormDataListInput" class="form-label">
+    Product Form
+</label>
+
+<input class="form-control" list="newProductFormDataListOptions" id="newProductFormDataListInput"
+    placeholder="Start typing to search, i.e. 'flower'..." name="form">
+<datalist id="newProductFormDataListOptions">
+    {% for form in valid_forms %}
+    <option value="{{ form }}">{{ form }}</option>
+    {% endfor %}
+</datalist>

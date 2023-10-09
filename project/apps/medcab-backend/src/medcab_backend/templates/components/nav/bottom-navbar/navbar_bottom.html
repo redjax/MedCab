@@ -1,0 +1,49 @@
+<nav class="navbar fixed-bottom navbar-expand-sm navbar-dark bg-dark">
+    <div class="container-fluid">
+
+        <a class="navbar-brand" href="{{ url_for('index') }}">MedCab</a>
+
+        <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false"
+            aria-label="Toggle collapsed navigation">
+            <span class=navbar-toggler-icon></span>
+        </button>
+
+        <div class="navbar-collapse collapse" id="navbarCollapse" style>
+
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item dropup" data-bs-theme="dark">
+                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">
+                        Products
+                    </a>
+
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item {% if page_name == 'products' %}active{% endif %}"
+                                href="{{ url_for('products.index') }}">My Products</a>
+                        </li>
+
+                        <li>
+                            <a class="dropdown-item {% if page_name == 'new_product' %}active{% endif %}"
+                                href="{{ url_for('products.new_product_page') }}">Add Product</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+
+        </div>
+
+        <div class="col-md-auto">
+            <!-- Quick add button. This opens an offscreen canvas. The code for that canvas is in the base.html template. -->
+            <button class="btn btn-success" type="button" data-bs-toggle="offcanvas"
+                data-bs-target="#quickAddOffCanvasBottom" aria-controls="quickAddOffCanvasBottom">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                    class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
+                    <path
+                        d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z" />
+                </svg>
+                Quick Add
+            </button>
+        </div>
+    </div>
+</nav>

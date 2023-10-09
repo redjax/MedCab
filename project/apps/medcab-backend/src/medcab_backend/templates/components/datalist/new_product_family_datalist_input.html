@@ -1,0 +1,11 @@
+<label for="newProductFamilyDataListInput" class="form-label">
+    Family
+</label>
+
+<input class="form-control" list="newProductFamilyDataListOptions" id="newProductFamilyDataListInput" name="family"
+    placeholder="Start typing to search, i.e. 'hybrid'...">
+<datalist id="newProductFamilyDataListOptions">
+    {% for family in valid_families %}
+    <option value="{{ family }}">{{ family }}</option>
+    {% endfor %}
+</datalist>

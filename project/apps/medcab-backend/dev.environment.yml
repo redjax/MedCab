@@ -1,0 +1,22 @@
+name: medcab-backend-dev
+channels:
+  - nodefaults
+  - conda-forge
+variables:
+  ENV_FOR_DYNACONF: dev
+dependencies:
+  - python>=3.11
+  - pip
+  - dynaconf
+  - flask
+  - sqlalchemy
+  - loguru
+  - attrs
+
+  ## Dev tools
+  - black
+  - ruff
+  - pytest
+
+  - pip:
+      - red-utils
