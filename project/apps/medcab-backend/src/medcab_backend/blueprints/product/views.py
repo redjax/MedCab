@@ -17,7 +17,7 @@ from flask import (
     render_template,
 )
 
-from .form_schemas import NewProductform
+from medcab_backend.domain.product.form_schemas import NewProductform
 
 import attrs
 from loguru import logger as log
