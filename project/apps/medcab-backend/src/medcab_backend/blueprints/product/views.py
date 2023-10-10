@@ -1,10 +1,13 @@
 from pathlib import Path
 import os
+from typing import Union
+import json
 
 from flask import (
     Blueprint,
     abort,
     request,
+    Request,
     Response,
     jsonify,
     redirect,
@@ -28,19 +31,32 @@ import ast
 
 products_app = Blueprint("products", __name__)
 
+def validate_notification(request: Request = None) -> Union[PageNotificationGeneric, None]:
+    """Extract notification arg from incoming request & return as a parsed PageNotificationGeneric."""
+    if request is None:
+        return_obj = None
+    if request.args.get("notification") is not None:
+        try:
+            return_obj: PageNotificationGeneric = PageNotificationGeneric.model_validate_json(request.args.get("notification"))
+        except Exception as exc:
+            log.error(Exception(f"Unhandled exception extracting notification from request object. Details: {exc}"))
+            
+            return None
+    else:
+        return_obj = None
+        
+    return return_obj
+        
 
 @products_app.route("/", methods=["GET"])
-def index(notification: PageNotificationGeneric = None) -> dict[str, str]:
+def index() -> dict[str, str]:
+    
+    if request.args.get("notification"):
+        notification = validate_notification(request=request)
+    else:
+        notification = None
+    
     if request.method == "GET":
-        # notification_dict = request.args.get("notification")
-
-        # if notification_dict is not None:
-        #     notification = PageNotificationGeneric(
-        #         **ast.literal_eval(notification_dict)
-        #     )
-        # else:
-        #     notification = None
-
         return render_template(
             "pages/products/index.html",
             app_env=ENV,
@@ -52,13 +68,8 @@ def index(notification: PageNotificationGeneric = None) -> dict[str, str]:
 
 
 @products_app.route("/new", methods=["GET"])
-def new_product_page(notification: PageNotificationGeneric = None):
-    # notification_dict = request.args.get("notification")
-
-    # if notification_dict is not None:
-    #     notification = PageNotificationGeneric(**ast.literal_eval(notification_dict))
-    # else:
-    #     notification = None
+def new_product_page():
+    notification = validate_notification(request)
 
     return render_template(
         "pages/products/new/index.html",
@@ -71,10 +82,12 @@ def new_product_page(notification: PageNotificationGeneric = None):
 
 
 @products_app.route("/new", methods=["post"])
-def create_new_product(notification: PageNotificationGeneric = None):
+def create_new_product():
     ## Check header type, handle application/json and multipart/form-data
     content_type = request.headers.get("Content-Type")
     log.info(f"Received POST request, content-type: {content_type}")
+    
+    notification = validate_notification(request)
 
     ## Parse incoming JSON data, i.e. from an API call
     if content_type == "application/json":
@@ -116,16 +129,6 @@ def create_new_product(notification: PageNotificationGeneric = None):
     ## Web form data
     elif "multipart/form-data" in content_type:
         log.debug(f"Web form data received. Attempting to parse as form")
-        # notification_dict = request.args.get("notification")
-
-        # log.debug(f"Notification dict ({type(notification_dict)}): {notification_dict}")
-
-        # if notification_dict is not None:
-        #     notification = PageNotificationGeneric(
-        #         **ast.literal_eval(notification_dict)
-        #     )
-        # else:
-        #     notification = None
 
         try:
             new_product_form = NewProductform(request.form)
@@ -143,29 +146,49 @@ def create_new_product(notification: PageNotificationGeneric = None):
                 success=False,
                 data={"exception": exc},
             )
-            return redirect(url_for("products.index", notification=notification))
+            return redirect(url_for("products.index", notification=notification.model_dump_json()))
 
         log.debug(f"Incoming product data: {new_product_form.data}")
         if new_product_form.errors:
             log.error(f"Form validation errors: {new_product_form.errors}")
 
-        try:
-            if new_product_form.validate():
-                new_product = Product(**new_product_form.data)
-
-                log.debug(f"New product: {new_product}")
+        if new_product_form.validate():
+            try:
+                log.debug(f"Form data ({type(new_product_form.data)}): {new_product_form.data}")
+                # new_product = Product(favorite=new_product_form.data["favorite"], strain=new_product_form.data['strain'])
+                new_product = Product.model_validate(new_product_form.data)
+                log.debug(f"New product ({type(new_product)}): {new_product}")
 
                 notification = PageNotificationGeneric(
-                    f"Success: Added {new_product.strain}.", display=True, success=True
+                    message=f"Success: Added {new_product.strain}.",
+                    display=True,
+                    success=True,
+                )
+                
+                log.debug(f"Made it past notification creation")
+
+                return redirect(
+                    url_for("products.new_product_page", notification=notification.model_dump_json())
+                )
+
+            except Exception as exc:
+                log.error(
+                    Exception(
+                        f"Unhandled exception creating new Product object from form input. Details: {exc}"
+                    )
+                )
+
+                notification = PageNotificationGeneric(
+                    message=f"Error: Did not add new product, check server logs for details", display=True, success=False
                 )
 
                 return redirect(
-                    url_for("products.new_product_page", notification=notification)
+                    url_for("products.new_product_page", notification=notification.model_dump_json())
                 )
-            else:
-                log.error(
-                    f"Unable to validate new product form input. Details: {new_product_form.errors}"
-                )
+        else:
+            log.error(
+                f"Unable to validate new product form input. Details: {new_product_form.errors}"
+            )
 
             notification = PageNotificationGeneric(
                 message="Unable to parse form input into Product object.",
@@ -179,37 +202,18 @@ def create_new_product(notification: PageNotificationGeneric = None):
                     "products.index",
                     valid_families=valid_families,
                     valid_forms=valid_forms,
-                    notification=notification,
+                    notification=notification.model_dump_json(),
                 )
-            )
-
-        except Exception as exc:
-            log.error(
-                Exception(
-                    f"Unhandled exception validating form & converting to Product object. Details: {exc}"
-                )
-            )
-
-            notification = PageNotificationGeneric(
-                message="Form validation failed.",
-                display=True,
-                success=False,
-                data={"exception": exc},
-            )
-
-            return redirect(
-                url_for("products.new_product_page", notification=notification)
             )
 
     ## Non JSON/web form data
     else:
-        return Response(
-            jsonify(
-                {
-                    "response": NotImplementedError(
-                        f"Support for requests with Content-Type {content_type} not supported."
-                    )
-                },
-                status=501,
-            )
-        )
+        return redirect(
+            url_for("products.index"),
+            valid_families=valid_families,
+            valid_forms=valid_forms,
+            notification=PageNotificationGeneric(
+                message=f"Received unsupported Content-Type: {content_type}",
+                display=True,
+                success=False,
+            ).model_dump_json())
