@@ -1,4 +1,3 @@
-from . import alerts, base, page
+from . import notification
 
-from .alerts import PageNotificationGeneric
-from .page import PageData
+from .notification import PageNotificationGeneric, PageData

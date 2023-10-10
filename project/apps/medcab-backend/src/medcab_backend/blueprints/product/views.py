@@ -23,11 +23,9 @@ import attrs
 from loguru import logger as log
 
 from medcab_backend.domain.product import Product
-from medcab_backend.domain.ui import PageNotificationGeneric
+from medcab_backend.domain.ui.notification import PageNotificationGeneric, validate_notification
 from medcab_backend.constants import ENV
 from medcab_backend.domain.product.validators import valid_families, valid_forms
-
-import ast
 
 products_app = Blueprint("products", __name__)
 
