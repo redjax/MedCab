@@ -4,6 +4,7 @@ from dynaconf import settings
 
 ENV: str = settings.ENV
 CONTAINER_ENV: str = settings.CONTAINER_ENV
+env_str: str = f"[env:{ENV}|container:{CONTAINER_ENV}]"
 
 APP_NAME: str = settings.APP_NAME
 APP_DESCRIPTION: str = settings.APP_DESCRIPTION

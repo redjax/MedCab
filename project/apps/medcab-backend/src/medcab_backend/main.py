@@ -21,6 +21,7 @@ from medcab_backend.blueprints.product.views import (
 )
 
 from medcab_backend.domain.ui import PageNotificationGeneric
+from medcab_backend.domain.ui.notification import validate_notification
 
 app = Flask(__name__)
 app.secret_key = settings.APP_SECRET_KEY
@@ -28,19 +29,17 @@ app.register_blueprint(products_app, url_prefix="/products")
 
 
 @app.route("/", methods=["GET"])
-def index(notification: PageNotificationGeneric = None) -> dict[str, str]:
-    # notification_dict = request.args.get("notification")
-
-    # if notification_dict is not None:
-    #     notification = PageNotificationGeneric(**ast.literal_eval(notification_dict))
-    # else:
-    #     notification = None
+def index() -> dict[str, str]:
+    if request.args.get("notification"):
+        notification = validate_notification(request=request)
+    else:
+        notification = None
 
     log.debug(f"MedCab Backend root page reached")
     # return {"msg": f"{APP_NAME} v{APP_VERSION} reached"}
     return render_template(
         "pages/index.html",
-        app_env="dev",
+        app_env=ENV,
         page_name="home",
         valid_forms=valid_forms,
         valid_families=valid_families,
