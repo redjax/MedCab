@@ -3,12 +3,14 @@ from __future__ import annotations
 import socket
 
 import attrs
+
 from attrs import define, field
-
 from dynaconf import settings
-
 from flask import Flask
 from flask.logging import default_handler
+
+# from medcab_backend.utils.flask_utils import setup_flask_logger
+from loguru import logger as log
 
 # from medcab_backend.constants import (
 #     APP_DEBUG,
@@ -18,9 +20,6 @@ from flask.logging import default_handler
 #     ENV
 # )
 from medcab_backend.main import app
-
-# from medcab_backend.utils.flask_utils import setup_flask_logger
-from loguru import logger as log
 from red_utils.ext.loguru_utils import init_logger, sinks
 
 port_ban_list: list[int] = [1, 22, 80, 443, 21]

@@ -1,10 +1,12 @@
-from red_utils.ext.sqlalchemy_utils import saSQLiteConnection, get_engine
+from __future__ import annotations
 
+from medcab_backend.domain.ui import DropdownMenuOptions
 from medcab_backend.utils.ui_utils.menus import (
     family_dropdown_options,
     form_dropdown_options,
 )
-from medcab_backend.domain.ui import DropdownMenuOptions
+
+from red_utils.ext.sqlalchemy_utils import get_engine, saSQLiteConnection
 
 db_conn: saSQLiteConnection = saSQLiteConnection(database=".db/medcab.db")
 

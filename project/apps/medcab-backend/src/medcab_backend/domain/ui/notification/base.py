@@ -1,7 +1,9 @@
-from pydantic import BaseModel, validator, ValidationError, Field
-from typing import Union
-from decimal import Decimal
+from __future__ import annotations
 
+from decimal import Decimal
+from typing import Union
+
+from pydantic import BaseModel, Field, ValidationError, validator
 
 class PageNotificationBase(BaseModel):
     """Store content for a notification or alert."""

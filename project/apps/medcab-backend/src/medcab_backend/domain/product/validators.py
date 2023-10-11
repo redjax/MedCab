@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 valid_families: list[str] = ["hybrid", "indica", "sativa", "unknown"]
 valid_forms: list[str] = [
     "badder",
