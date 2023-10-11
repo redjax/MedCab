@@ -2,6 +2,8 @@ from pydantic import BaseModel, Field, validator, ValidationError
 from typing import Union
 from decimal import Decimal
 
+import uuid
+
 from .validators import valid_families, valid_forms
 
 
@@ -61,6 +63,20 @@ class ProductBase(BaseModel):
     @validator("total_cbd")
     def validate_total_cbd(cls, v) -> Decimal:
         return v or Decimal(0.0)
+
+
+class ProductCreate(ProductBase):
+    id: uuid.UUID
+
+    class Config:
+        from_attributes = True
+
+
+class ProductResponse(ProductBase):
+    id: uuid.UUID
+
+    class Config:
+        from_attributes = True
 
 
 class Product(ProductBase):

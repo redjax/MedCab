@@ -14,18 +14,21 @@ from medcab_backend.constants import (
     APP_DESCRIPTION,
 )
 
-from medcab_backend.blueprints.product.views import (
-    products_app,
-    valid_families,
-    valid_forms,
-)
+from medcab_backend.blueprints.product.views import products_app
 
 from medcab_backend.domain.ui import PageNotificationGeneric
 from medcab_backend.domain.ui.notification import validate_notification
 
+from red_utils.ext.sqlalchemy_utils import Base, create_base_metadata
+
+from medcab_backend.dependencies import engine, dropdown_family, dropdown_form
+
 app = Flask(__name__)
 app.secret_key = settings.APP_SECRET_KEY
 app.register_blueprint(products_app, url_prefix="/products")
+
+
+create_base_metadata(base_obj=Base, engine=engine)
 
 
 @app.route("/", methods=["GET"])
@@ -41,8 +44,8 @@ def index() -> dict[str, str]:
         "pages/index.html",
         app_env=ENV,
         page_name="home",
-        valid_forms=valid_forms,
-        valid_families=valid_families,
+        valid_forms=dropdown_form.options,
+        valid_families=dropdown_family.options,
         notification=notification,
     )
 

@@ -1,0 +1,19 @@
+<div class="card text-center my-2">
+
+    <div
+        class="card-header text-bg-{% if product.family == 'indica' %}primary{% elif product.family =='hybrid' %}success{% elif product.family == 'sativa' %}warning{% endif %}">
+        {{ product.strain }}
+    </div>
+
+    <div class="card-body">
+        <p>Family: {{ product.family }}</p>
+        <p>Form: {{ product.form }}</p>
+        <p>Total CBD: {{ product.total_cbd }}</p>
+        <p>Total THC: {{ product.total_thc }}</p>
+    </div>
+
+    <div class="card-footer text-body-secondary">
+        <p>Favorite: {{ product.favorite }}</p>
+    </div>
+
+</div>

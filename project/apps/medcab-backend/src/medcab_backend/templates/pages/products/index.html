@@ -24,5 +24,13 @@
             </button>
         </div>
     </div>
+
+    <div class="row">
+        {% for product in products_list %}
+        <div class="col-md-4">
+            {% include "components/card/product/product_card.html" %}
+        </div>
+        {% endfor %}
+    </div>
 </div>
 {% endblock content %}
