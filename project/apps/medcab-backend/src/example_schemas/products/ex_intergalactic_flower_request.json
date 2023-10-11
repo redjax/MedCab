@@ -1,0 +1,34 @@
+{
+    "name": "Intergalactic",
+    "strain": "indica",
+    "favorite": false,
+    "weight": 2.83,
+    "purchaseDate": "2023-08-18",
+    "dispensary": "The Botanist",
+    "brand": "",
+    "manufacturer": "",
+    "harvestDate": "2023-04-17",
+    "expirationDate": "2024-04-16",
+    "testedDate": "2023-05-11",
+    "packageDate": "2023-05-18",
+    "batchNumber": "1A40715000024B9000000629",
+    "form": "flower",
+    "terpenes": [
+        {
+            "name": "delta-limonene",
+            "content": 1.290
+        },
+        {
+            "name": "linalool",
+            "content": 0.378
+        },
+        {
+            "name": "beta-myrcene",
+            "content": 0.342
+        },
+        {
+            "name": "beta-pinene/sabinene",
+            "content": 0.164
+        }
+    ]
+}

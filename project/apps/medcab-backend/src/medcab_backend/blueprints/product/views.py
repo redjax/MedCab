@@ -22,45 +22,89 @@ from medcab_backend.domain.product.form_schemas import NewProductform
 import attrs
 from loguru import logger as log
 
-from medcab_backend.domain.product import Product
-from medcab_backend.domain.ui.notification import PageNotificationGeneric, validate_notification
+from medcab_backend.domain.product import Product, ProductResponse, crud as product_crud
+from medcab_backend.domain.product.models import ProductModel
+
+from medcab_backend.domain.ui.notification import (
+    PageNotificationGeneric,
+    validate_notification,
+)
 from medcab_backend.constants import ENV
-from medcab_backend.domain.product.validators import valid_families, valid_forms
+from medcab_backend.dependencies import dropdown_form, dropdown_family
+
 
 products_app = Blueprint("products", __name__)
 
-def validate_notification(request: Request = None) -> Union[PageNotificationGeneric, None]:
+
+def validate_notification(
+    request: Request = None,
+) -> Union[PageNotificationGeneric, None]:
     """Extract notification arg from incoming request & return as a parsed PageNotificationGeneric."""
     if request is None:
         return_obj = None
     if request.args.get("notification") is not None:
         try:
-            return_obj: PageNotificationGeneric = PageNotificationGeneric.model_validate_json(request.args.get("notification"))
+            return_obj: PageNotificationGeneric = (
+                PageNotificationGeneric.model_validate_json(
+                    request.args.get("notification")
+                )
+            )
         except Exception as exc:
-            log.error(Exception(f"Unhandled exception extracting notification from request object. Details: {exc}"))
-            
+            log.error(
+                Exception(
+                    f"Unhandled exception extracting notification from request object. Details: {exc}"
+                )
+            )
+
             return None
     else:
         return_obj = None
-        
+
     return return_obj
-        
+
 
 @products_app.route("/", methods=["GET"])
 def index() -> dict[str, str]:
-    
     if request.args.get("notification"):
         notification = validate_notification(request=request)
     else:
         notification = None
-    
+
+    try:
+        db_products: list[ProductModel] = product_crud.get_all_products()
+        log.debug(f"Loaded [{len(db_products)}] from database.")
+
+        all_products: list[ProductResponse] = []
+
+        for p in db_products:
+            product_response: ProductResponse = ProductResponse(
+                id=p.id,
+                favorite=p.favorite,
+                strain=p.strain,
+                family=p.family,
+                form=p.form,
+                total_cbd=p.total_cbd,
+                total_thc=p.total_thc,
+            )
+
+            all_products.append(product_response)
+
+    except Exception as exc:
+        log.error(
+            Exception(
+                f"Unhandled exception getting all Products from DB. Details: {exc}"
+            )
+        )
+        all_products = None
+
     if request.method == "GET":
         return render_template(
             "pages/products/index.html",
             app_env=ENV,
             page_name="products",
-            valid_forms=valid_forms,
-            valid_families=valid_families,
+            products_list=all_products,
+            valid_forms=dropdown_form.options,
+            valid_families=dropdown_family.options,
             notification=notification,
         )
 
@@ -73,8 +117,8 @@ def new_product_page():
         "pages/products/new/index.html",
         app_env=ENV,
         page_name="new_product",
-        valid_forms=valid_forms,
-        valid_families=valid_families,
+        valid_forms=dropdown_form.options,
+        valid_families=dropdown_family.options,
         notification=notification,
     )
 
@@ -84,7 +128,7 @@ def create_new_product():
     ## Check header type, handle application/json and multipart/form-data
     content_type = request.headers.get("Content-Type")
     log.info(f"Received POST request, content-type: {content_type}")
-    
+
     notification = validate_notification(request)
 
     ## Parse incoming JSON data, i.e. from an API call
@@ -144,7 +188,9 @@ def create_new_product():
                 success=False,
                 data={"exception": exc},
             )
-            return redirect(url_for("products.index", notification=notification.model_dump_json()))
+            return redirect(
+                url_for("products.index", notification=notification.model_dump_json())
+            )
 
         log.debug(f"Incoming product data: {new_product_form.data}")
         if new_product_form.errors:
@@ -152,8 +198,9 @@ def create_new_product():
 
         if new_product_form.validate():
             try:
-                log.debug(f"Form data ({type(new_product_form.data)}): {new_product_form.data}")
-                # new_product = Product(favorite=new_product_form.data["favorite"], strain=new_product_form.data['strain'])
+                log.debug(
+                    f"Form data ({type(new_product_form.data)}): {new_product_form.data}"
+                )
                 new_product = Product.model_validate(new_product_form.data)
                 log.debug(f"New product ({type(new_product)}): {new_product}")
 
@@ -162,11 +209,16 @@ def create_new_product():
                     display=True,
                     success=True,
                 )
-                
-                log.debug(f"Made it past notification creation")
+
+                ## Create product in database
+                db_product = product_crud.create_product(product=new_product)
+                log.debug(f"DB Product: {db_product}")
 
                 return redirect(
-                    url_for("products.new_product_page", notification=notification.model_dump_json())
+                    url_for(
+                        "products.new_product_page",
+                        notification=notification.model_dump_json(),
+                    )
                 )
 
             except Exception as exc:
@@ -177,11 +229,16 @@ def create_new_product():
                 )
 
                 notification = PageNotificationGeneric(
-                    message=f"Error: Did not add new product, check server logs for details", display=True, success=False
+                    message=f"Error: Did not add new product, check server logs for details",
+                    display=True,
+                    success=False,
                 )
 
                 return redirect(
-                    url_for("products.new_product_page", notification=notification.model_dump_json())
+                    url_for(
+                        "products.new_product_page",
+                        notification=notification.model_dump_json(),
+                    )
                 )
         else:
             log.error(
@@ -198,8 +255,8 @@ def create_new_product():
             return redirect(
                 url_for(
                     "products.index",
-                    valid_families=valid_families,
-                    valid_forms=valid_forms,
+                    valid_families=dropdown_form.options,
+                    valid_forms=dropdown_family.options,
                     notification=notification.model_dump_json(),
                 )
             )
@@ -208,10 +265,11 @@ def create_new_product():
     else:
         return redirect(
             url_for("products.index"),
-            valid_families=valid_families,
-            valid_forms=valid_forms,
+            valid_families=dropdown_form.options,
+            valid_forms=dropdown_family.options,
             notification=PageNotificationGeneric(
                 message=f"Received unsupported Content-Type: {content_type}",
                 display=True,
                 success=False,
-            ).model_dump_json())
+            ).model_dump_json(),
+        )
