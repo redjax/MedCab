@@ -1,11 +1,12 @@
-from pydantic import BaseModel, Field, validator, ValidationError
-from typing import Union
-from decimal import Decimal
+from __future__ import annotations
 
+from decimal import Decimal
+from typing import Union
 import uuid
 
 from .validators import valid_families, valid_forms
 
+from pydantic import BaseModel, Field, ValidationError, validator
 
 class ProductBase(BaseModel):
     favorite: bool = Field(default=False)
@@ -41,7 +42,7 @@ class ProductBase(BaseModel):
         if not v:
             return None
 
-        if not v in valid_families:
+        if v not in valid_families:
             raise ValidationError
 
         return v
@@ -51,7 +52,7 @@ class ProductBase(BaseModel):
         if not v:
             return None
 
-        if not v in valid_forms:
+        if v not in valid_forms:
             raise ValidationError
 
         return v

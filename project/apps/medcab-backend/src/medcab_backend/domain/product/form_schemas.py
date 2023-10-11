@@ -1,14 +1,15 @@
-from wtforms import (
-    Form,
-    BooleanField,
-    StringField,
-    PasswordField,
-    DecimalField,
-    validators,
-)
+from __future__ import annotations
 
 from decimal import Decimal
 
+from wtforms import (
+    BooleanField,
+    DecimalField,
+    Form,
+    PasswordField,
+    StringField,
+    validators,
+)
 
 class NewProductform(Form):
     favorite: bool = BooleanField("favorite")

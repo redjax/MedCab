@@ -1,27 +1,24 @@
-from dynaconf import settings
+from __future__ import annotations
 
-from loguru import logger as log
-from red_utils.ext.loguru_utils import init_logger, sinks
-
-from flask import Flask, render_template, request
 import ast
 
+from medcab_backend.blueprints.product.views import products_app
 from medcab_backend.constants import (
-    ENV,
-    CONTAINER_ENV,
+    APP_DESCRIPTION,
     APP_NAME,
     APP_VERSION,
-    APP_DESCRIPTION,
+    CONTAINER_ENV,
+    ENV,
 )
-
-from medcab_backend.blueprints.product.views import products_app
-
+from medcab_backend.dependencies import dropdown_family, dropdown_form, engine
 from medcab_backend.domain.ui import PageNotificationGeneric
 from medcab_backend.domain.ui.notification import validate_notification
 
+from dynaconf import settings
+from flask import Flask, render_template, request
+from loguru import logger as log
+from red_utils.ext.loguru_utils import init_logger, sinks
 from red_utils.ext.sqlalchemy_utils import Base, create_base_metadata
-
-from medcab_backend.dependencies import engine, dropdown_family, dropdown_form
 
 app = Flask(__name__)
 app.secret_key = settings.APP_SECRET_KEY

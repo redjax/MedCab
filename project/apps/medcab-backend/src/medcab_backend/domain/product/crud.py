@@ -1,17 +1,19 @@
+from __future__ import annotations
+
 import uuid
 
+from medcab_backend.dependencies import engine
 from medcab_backend.domain.product.models import ProductModel
 from medcab_backend.domain.product.schemas import Product, ProductCreate
 from medcab_backend.domain.product.validators import valid_families, valid_forms
-from red_utils.ext.sqlalchemy_utils import get_session
-from red_utils.ext.pydantic_utils import parse_pydantic_schema
-from medcab_backend.dependencies import engine
 
 from loguru import logger as log
-
+from red_utils.ext.pydantic_utils import parse_pydantic_schema
+from red_utils.ext.sqlalchemy_utils import get_session
 import sqlalchemy as sa
-from sqlalchemy.orm import Session, Query, sessionmaker
+
 from sqlalchemy import func, select
+from sqlalchemy.orm import Query, Session, sessionmaker
 
 SessionLocal = get_session(engine=engine)
 
@@ -182,7 +184,7 @@ def get_products_by_family(
     if not family:
         raise ValueError(f"Missing strain")
 
-    if not family in valid_families:
+    if family not in valid_families:
         raise ValueError(f"Invalid strain: {family}. Must be one of: {valid_families}")
 
     try:
@@ -205,7 +207,7 @@ def get_products_by_form(
     if not form:
         raise ValueError(f"Missing form")
 
-    if not form in valid_forms:
+    if form not in valid_forms:
         raise ValueError(f"Invalid form: {form}. Must be one of: {valid_forms}")
 
     try:

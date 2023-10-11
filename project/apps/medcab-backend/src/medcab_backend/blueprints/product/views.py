@@ -1,37 +1,41 @@
-from pathlib import Path
-import os
-from typing import Union
+from __future__ import annotations
+
 import json
+import os
 
-from flask import (
-    Blueprint,
-    abort,
-    request,
-    Request,
-    Response,
-    jsonify,
-    redirect,
-    url_for,
-    flash,
-    current_app,
-    render_template,
+from pathlib import Path
+from typing import Union
+
+from medcab_backend.constants import ENV
+from medcab_backend.dependencies import dropdown_family, dropdown_form
+from medcab_backend.domain.product import (
+    Product,
+    ProductResponse,
+    crud as product_crud,
 )
-
 from medcab_backend.domain.product.form_schemas import NewProductform
-
-import attrs
-from loguru import logger as log
-
-from medcab_backend.domain.product import Product, ProductResponse, crud as product_crud
 from medcab_backend.domain.product.models import ProductModel
-
 from medcab_backend.domain.ui.notification import (
     PageNotificationGeneric,
     validate_notification,
 )
-from medcab_backend.constants import ENV
-from medcab_backend.dependencies import dropdown_form, dropdown_family
 
+import attrs
+
+from flask import (
+    Blueprint,
+    Request,
+    Response,
+    abort,
+    current_app,
+    flash,
+    jsonify,
+    redirect,
+    render_template,
+    request,
+    url_for,
+)
+from loguru import logger as log
 
 products_app = Blueprint("products", __name__)
 

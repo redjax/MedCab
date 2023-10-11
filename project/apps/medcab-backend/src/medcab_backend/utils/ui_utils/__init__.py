@@ -1,3 +1,4 @@
-from . import menus
+from __future__ import annotations
 
-from .menus import form_dropdown_options, family_dropdown_options
+from . import menus
+from .menus import family_dropdown_options, form_dropdown_options

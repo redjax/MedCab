@@ -1,2 +1,3 @@
-from . import product
-from . import ui
+from __future__ import annotations
+
+from . import product, ui

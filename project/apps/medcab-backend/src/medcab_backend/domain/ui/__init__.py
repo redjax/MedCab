@@ -1,4 +1,5 @@
-from . import notification, menu
+from __future__ import annotations
 
-from .notification import PageNotificationGeneric, PageData
+from . import menu, notification
 from .menu import DropdownMenuOptions
+from .notification import PageData, PageNotificationGeneric
