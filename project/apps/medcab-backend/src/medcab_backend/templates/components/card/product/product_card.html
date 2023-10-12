@@ -2,18 +2,26 @@
 
     <div
         class="card-header text-bg-{% if product.family == 'indica' %}primary{% elif product.family =='hybrid' %}success{% elif product.family == 'sativa' %}warning{% endif %}">
+
         {{ product.strain }}
+
     </div>
 
     <div class="card-body">
         <p>Family: {{ product.family }}</p>
         <p>Form: {{ product.form }}</p>
-        <p>Total CBD: {{ product.total_cbd }}</p>
-        <p>Total THC: {{ product.total_thc }}</p>
+        <p>Total CBD: {{ product.total_cbd|round(2) }}</p>
+        <p>Total THC: {{ product.total_thc|round(2) }}</p>
+
     </div>
 
     <div class="card-footer text-body-secondary">
-        <p>Favorite: {{ product.favorite }}</p>
+
+        {% if product.favorite %}
+        {% include "components/svgs/heart_svg.html" %}
+        {% endif %}
+
     </div>
+
 
 </div>

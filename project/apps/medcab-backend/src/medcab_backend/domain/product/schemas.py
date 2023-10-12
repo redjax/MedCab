@@ -8,6 +8,7 @@ from .validators import valid_families, valid_forms
 
 from pydantic import BaseModel, Field, ValidationError, validator
 
+
 class ProductBase(BaseModel):
     favorite: bool = Field(default=False)
     strain: str | None = Field(default=None)
@@ -69,12 +70,18 @@ class ProductBase(BaseModel):
 class ProductCreate(ProductBase):
     id: uuid.UUID
 
+    class Meta:
+        orm_model = "SQLAModelName"
+
     class Config:
         from_attributes = True
 
 
 class ProductResponse(ProductBase):
     id: uuid.UUID
+
+    class Meta:
+        orm_model = "SQLAModelName"
 
     class Config:
         from_attributes = True

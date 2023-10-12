@@ -147,6 +147,7 @@ def create_new_product():
             return Response(
                 product.model_dump_json(), status=201, mimetype="application/json"
             )
+
         except TypeError as type_err:
             log.error(
                 TypeError(
@@ -208,19 +209,26 @@ def create_new_product():
                 new_product = Product.model_validate(new_product_form.data)
                 log.debug(f"New product ({type(new_product)}): {new_product}")
 
-                notification = PageNotificationGeneric(
-                    message=f"Success: Added {new_product.strain}.",
-                    display=True,
-                    success=True,
-                )
-
                 ## Create product in database
                 db_product = product_crud.create_product(product=new_product)
                 log.debug(f"DB Product: {db_product}")
 
+                if db_product is None:
+                    notification = PageNotificationGeneric(
+                        message=f"Did not add Product {new_product.strain} to DB. test",
+                        display=False,
+                        success=False,
+                    )
+                else:
+                    notification = PageNotificationGeneric(
+                        message=f"Success: Added {new_product.strain}.",
+                        display=True,
+                        success=True,
+                    )
+
                 return redirect(
                     url_for(
-                        "products.new_product_page",
+                        "products.index",
                         notification=notification.model_dump_json(),
                     )
                 )

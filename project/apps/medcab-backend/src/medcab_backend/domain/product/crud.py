@@ -6,8 +6,10 @@ from medcab_backend.dependencies import engine
 from medcab_backend.domain.product.models import ProductModel
 from medcab_backend.domain.product.schemas import Product, ProductCreate
 from medcab_backend.domain.product.validators import valid_families, valid_forms
+from medcab_backend.utils.db_utils.converters import convert_row_to_dict
 
 from loguru import logger as log
+
 from red_utils.ext.pydantic_utils import parse_pydantic_schema
 from red_utils.ext.sqlalchemy_utils import get_session
 import sqlalchemy as sa
@@ -48,6 +50,7 @@ def create_product(
 
     try:
         with db() as sess:
+            db_products: list[ProductModel] = []
             db_product: ProductModel | None = None
 
             log.debug(f"Building SELECT statement on .strain")
@@ -56,28 +59,87 @@ def create_product(
             )
             log.debug("Executing SELECT ProductModel statement")
 
-            db_products: list[ProductModel] = sess.execute(db_product_sel).all()
+            db_products = sess.execute(db_product_sel).all()
             log.debug(
                 f"Results: ({type(db_products)}) [items:{len(db_products)}]: {db_products}"
             )
 
+        ## No items found in DB
+        if len(db_products) == 0:
+            log.debug(
+                f"Did not find any Products in DB by strain name: {product.strain}. Writing incoming Product to DB."
+            )
+
+            log.debug(f"Converting Product schema to DB model")
+            dump_schema = parse_pydantic_schema(schema=product)
+            new_product: ProductModel = ProductModel(**dump_schema)
+
+            try:
+                log.info("Committing new Product to DB")
+                sess.add(new_product)
+                sess.commit()
+
+                return new_product
+            except Exception as exc:
+                log.error(
+                    Exception(
+                        f"Unhandled exception writing new ProductModel to database. Details: {exc}"
+                    )
+                )
+
+                return None
+
+        ## Found 1 matching Product in the database. Compare forms, return DB product if matching form.
+        #  Otherwise, write new Product form to DB
+        elif len(db_products) == 1:
+            db_product = db_products[0]
+            log.debug(
+                f"Found Product matching strain [{product.strain}] in the database: ProductModel(Strain={db_product.strain}, Form={db_product.form})"
+            )
+            log.debug(f"Comparing Product forms")
+
+            if db_product.form == product.form:
+                log.warning(
+                    f"Product [{product.strain}] in form [{product.form}] already exists in DB."
+                )
+
+        else:
+            log.debug(f"Found [{len(db_products)}]")
+
+    except Exception as exc:
+        log.error(
+            Exception(
+                f"Unhandled exception attempting to retrieve Product {product.strain} from DB. Details: {exc}"
+            )
+        )
+
+        return None
+
+        """
+            ## Product not found by strain name
             if db_products is None:
                 log.warning(
                     f"No matching strain found for '{product.strain}'. Creating."
                 )
 
+                log.debug(f"Converting Product schema to DB model")
                 dump_schema = parse_pydantic_schema(schema=product)
                 new_product: ProductModel = ProductModel(**dump_schema)
 
                 try:
+                    log.info("Committing new Product to DB")
                     sess.add(new_product)
                     sess.commit()
 
                     return new_product
                 except Exception as exc:
-                    raise Exception(
-                        f"Unhandled exception writing new ProductModel to database. Details: {exc}"
+                    log.error(
+                        Exception(
+                            f"Unhandled exception writing new ProductModel to database. Details: {exc}"
+                        )
                     )
+
+                    return None
 
             else:
                 log.debug(
@@ -85,16 +147,23 @@ def create_product(
                 )
 
                 for p in db_products:
-                    if not p.form == p.form:
-                        pass
-                    else:
-                        log.debug(
-                            f"Product [{product.strain}] in form {product.form} already exists."
+                    _p = convert_row_to_dict(p)
+                    p = _p
+                    log.debug(f"DB Product ({type(p)}): {p}")
+                    try:
+                        if p.form == product.form:
+                            log.debug(
+                                f"Product [{product.strain}] in form {product.form} already exists."
+                            )
+
+                            ## Found match on strain & form
+                            db_product = p
+                    except Exception as exc:
+                        log.error(
+                            Exception(
+                                f"Unhandled exception matching DB Product.form with product.form. Details: {exc}"
+                            )
                         )
-
-                        db_product: ProductModel = p
-
-                        return db_product
 
                 if db_product is None:
                     log.debug(
@@ -120,6 +189,7 @@ def create_product(
 
     except Exception as exc:
         raise Exception(f"Unhandled exception creating Product. Details: {exc}")
+    """
 
 
 def get_all_products(db: sessionmaker[Session] = SessionLocal) -> list[ProductModel]:

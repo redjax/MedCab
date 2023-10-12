@@ -64,7 +64,13 @@ class FlaskServer:
 if __name__ == "__main__":
     ## Override Flask app's default logger with Loguru
     # setup_flask_logger(app=app)
-    init_logger(sinks=[sinks.default_stdout_color_sink])
+    init_logger(
+        sinks=[
+            sinks.default_stdout_color_sink,
+            sinks.default_app_log_file_sink,
+            sinks.default_error_log_file_sink,
+        ]
+    )
 
     log.info(f"[env:{settings.ENV}|container:${settings.CONTAINER_ENV}] Starting app")
     log.info(f"[env:{settings.ENV}] Settings: {settings.as_dict()}")
