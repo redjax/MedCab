@@ -12,26 +12,21 @@
         <div class="navbar-collapse collapse" id="navbarCollapse" style>
 
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                <li class="nav-item dropup" data-bs-theme="dark">
-                    <a class="nav-link dropdown-toggle" href="#" data-bs-toggle="dropdown" aria-expanded="false">
-                        Products
-                    </a>
-
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a class="dropdown-item {% if page_name == 'products' %}active{% endif %}"
-                                href="{{ url_for('products.index') }}">My Products</a>
-                        </li>
-
-                        <li>
-                            <a class="dropdown-item {% if page_name == 'new_product' %}active{% endif %}"
-                                href="{{ url_for('products.new_product_page') }}">Add Product</a>
-                        </li>
-                    </ul>
+                <!-- { include "components/nav/bottom-navbar/dropup_products.html" %} -->
+                <li class="nav-item">
+                    <a class="nav-link {% if page_name == 'products' %}active{% endif %}"
+                        href="{{ url_for('products.index') }}">My
+                        Products</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link {% if page_name == 'new_product' %}active{% endif %}"
+                        href="{{ url_for('products.new_product_page') }}">Add Product</a>
                 </li>
             </ul>
 
             <div class="col d-none d-sm-block">
+
+                <div class="vr"></div>
 
                 <span class="text-bg-dark">
                     {% include "components/svgs/caret_right_fill.html" %}
