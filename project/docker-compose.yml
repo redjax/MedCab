@@ -9,17 +9,18 @@ volumes:
 
 services:
 
+  ## Flask
   api:
     container_name: medcab_api
     restart: unless-stopped
     build:
-      context: ./apps/medcab-backend
+      context: ./apps/medcab-backend-flask
       dockerfile: ${MEDCAB_BACKEND_DOCKERFILE:-Dockerfile}
       target: ${MEDCAB_BACKEND_DOCKERFILE_BUILD_TARGET:-prod}
     working_dir: /app
     command: python start_server.py
     volumes:
-      - ${MEDCAB_BACKEND_APP_DIR:-./apps/medcab-backend/src}:/app
+      - ${MEDCAB_BACKEND_APP_DIR:-./apps/medcab-backend-flask/src}:/app
     ## Comment port definitions if using a proxy container
     # ports:
     #   - ${MEDCAB_BACKEND_HOST_PORT:-5000}:${MEDCAB_BACKEND_APP_PORT:-5000}
