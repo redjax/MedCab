@@ -127,7 +127,7 @@ def new_product_page():
     )
 
 
-@products_app.route("/new", methods=["post"])
+@products_app.route("/new", methods=["POST"])
 def create_new_product():
     ## Check header type, handle application/json and multipart/form-data
     content_type = request.headers.get("Content-Type")
@@ -285,3 +285,8 @@ def create_new_product():
                 success=False,
             ).model_dump_json(),
         )
+
+
+@products_app.route("/delete/<string:product_id>", methods=["POST"])
+def delete_product(product_id):
+    log.debug(f"Deleting product with ID: {product_id}")

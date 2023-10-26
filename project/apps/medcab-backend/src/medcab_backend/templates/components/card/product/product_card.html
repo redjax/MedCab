@@ -3,7 +3,11 @@
     <div
         class="card-header text-bg-{% if product.family == 'indica' %}primary{% elif product.family =='hybrid' %}success{% elif product.family == 'sativa' %}warning{% endif %}">
 
-        {{ product.strain }}
+        <div class="row">
+            <div class="col">
+                {{ product.strain }}
+            </div>
+        </div>
 
     </div>
 
@@ -17,9 +21,20 @@
 
     <div class="card-footer text-body-secondary">
 
-        {% if product.favorite %}
-        {% include "components/svgs/heart_svg.html" %}
-        {% endif %}
+        <div class="row">
+
+            {% if product.favorite %}
+            <!-- Spacer div for favorited product -->
+            <div class="col"></div>
+            <div class="col">
+                {% include "components/svgs/heart_svg.html" %}
+            </div>
+            {% endif %}
+
+            <div class="col">
+                {% include "components/button/delete/btn_delete_product.html" %}
+            </div>
+        </div>
 
     </div>
 
