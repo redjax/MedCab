@@ -1,6 +1,6 @@
 upstream backend {
-    server api:8000;
-    server localhost:8000;
+    server api:5000;
+    server localhost:5000;
 }
 
 server {
