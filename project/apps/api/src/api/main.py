@@ -30,6 +30,7 @@ from red_utils.ext.fastapi_utils.validators import validate_openapi_tags
 from red_utils.core import LOG_DIR
 from loguru import logger as log
 
+from api.routers import api_router
 
 logger_sinks = [
     LoguruSinkStdOut(level=app_settings.log_level).as_dict(),
@@ -53,6 +54,8 @@ app: FastAPI = get_app(
 )
 
 app.include_router(healthcheck.router)
+app.include_router(api_router.router)
+
 app.router.redirect_slashes = False
 
 if __name__ == "__main__":
