@@ -1,12 +1,12 @@
 from dynaconf import Dynaconf
+import os
 
-settings_root: str = "conf"
+settings_root: str = "config"
 
 settings = Dynaconf(
     root_path=settings_root,
-    environment=False,
-    envvar_prefix="DYNACONF_",
-    settings_files=["settings.toml", ".secrets.toml"],
+    # envvar_prefix="DYNACONF_",
+    settings_files=["settings.toml", "settings.local.toml", ".secrets.toml"],
 )
 
 # `envvar_prefix` = export envvars with `export DYNACONF_FOO=bar`.

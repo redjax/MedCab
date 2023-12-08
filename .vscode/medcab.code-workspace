@@ -25,8 +25,12 @@
 		// 	"path": "../project/apps/frontend/app"
 		// }
 		{
-			"name": "MedCab Backend - Flask",
-			"path": "../project/apps/medcab-backend-flask/"
+			"name": "Medcab Backend API - OLD",
+			"path": "../project/apps/api.bak/"
+		},
+		{
+			"name": "MedCab Backend API",
+			"path": "../project/apps/api"
 		}
 	],
 	"settings": {
