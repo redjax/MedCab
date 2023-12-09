@@ -1,1 +1,1 @@
-from . import api_router
+from . import api_router, products

@@ -5,6 +5,7 @@ sys.path.append(".")
 from pathlib import Path
 
 from core import app_settings, api_settings
+from core.api import CUSTOM_TAGS
 
 from fastapi import Depends, FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
@@ -42,6 +43,8 @@ allowed_origins = ["*"]
 allow_credentials = True
 allowed_methods = ["*"]
 allowed_headers = ["*"]
+
+update_tags_metadata(tags_metadata=tags_metadata, update_metadata=CUSTOM_TAGS)
 
 app: FastAPI = get_app(
     debug=api_settings.debug,

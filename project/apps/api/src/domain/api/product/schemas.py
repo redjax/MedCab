@@ -7,7 +7,7 @@ from datetime import date, datetime, time
 from pydantic import BaseModel, Field, validator, ValidationError
 from loguru import logger as log
 
-from core.constants import VALID_FORMS, VALID_FAMILIES
+from core.validators.product import VALID_FORMS, VALID_FAMILIES
 
 from decimal import Decimal
 
