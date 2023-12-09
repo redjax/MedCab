@@ -1,6 +1,8 @@
+from __future__ import annotations
+
 import sys
 
 sys.path.append(".")
 
-from .main import app
 from . import routers
+from .main import app

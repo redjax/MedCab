@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from core.enums import FamilyEnum, FormEnum
 
 VALID_FORMS: list = [member.value for member in FormEnum]

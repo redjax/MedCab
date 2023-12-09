@@ -1,5 +1,8 @@
-from dynaconf import Dynaconf
+from __future__ import annotations
+
 import os
+
+from dynaconf import Dynaconf
 
 settings_root: str = "config"
 

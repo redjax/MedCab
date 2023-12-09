@@ -1,15 +1,16 @@
-from typing import Optional, Any, Union
-import uuid
-import arrow
-from pathlib import Path
+from __future__ import annotations
+
 from datetime import date, datetime, time
-
-from pydantic import BaseModel, Field, validator, ValidationError
-from loguru import logger as log
-
-from core.validators.product import VALID_FORMS, VALID_FAMILIES
-
 from decimal import Decimal
+from pathlib import Path
+from typing import Any, Optional, Union
+import uuid
+
+import arrow
+
+from core.validators.product import VALID_FAMILIES, VALID_FORMS
+from loguru import logger as log
+from pydantic import BaseModel, Field, ValidationError, validator
 
 # from .models import ProductModel, TerpeneModel
 
@@ -42,7 +43,7 @@ class ProductBase(BaseModel):
         if not v:
             return None
 
-        if not v in VALID_FAMILIES:
+        if v not in VALID_FAMILIES:
             raise ValidationError
 
         return v
@@ -52,7 +53,7 @@ class ProductBase(BaseModel):
         if not v:
             return None
 
-        if not v in VALID_FORMS:
+        if v not in VALID_FORMS:
             raise ValidationError
 
         return v

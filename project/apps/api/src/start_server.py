@@ -8,12 +8,11 @@ stackprinter.set_excepthook(style="darkbg2")
 
 from pathlib import Path
 
+from core.config import api_settings, app_settings
 from loguru import logger as log
 from pydantic import BaseModel
-
-from core.config import app_settings, api_settings
-from red_utils.ext.loguru_utils import init_logger
 from red_utils.ext.fastapi_utils import setup_uvicorn_logging
+from red_utils.ext.loguru_utils import init_logger
 import uvicorn
 
 ENV: str = app_settings.env

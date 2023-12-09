@@ -1,20 +1,20 @@
+from __future__ import annotations
+
 import sys
 
 sys.path.append(".")
 
-from core import app_settings, api_settings
-
-from red_utils.core.constants import DATA_DIR, LOG_DIR, CACHE_DIR, SERIALIZE_DIR
-from red_utils.std import path_utils
-from red_utils.ext.loguru_utils import init_logger, LoguruSinkStdOut
-from loguru import logger as log
-
+from core import api_settings, app_settings
 from core.validators.product import (
-    VALID_FORMS,
     VALID_FAMILIES,
-    validate_form,
+    VALID_FORMS,
     validate_family,
+    validate_form,
 )
+from loguru import logger as log
+from red_utils.core.constants import CACHE_DIR, DATA_DIR, LOG_DIR, SERIALIZE_DIR
+from red_utils.ext.loguru_utils import LoguruSinkStdOut, init_logger
+from red_utils.std import path_utils
 
 if __name__ == "__main__":
     init_logger(sinks=[LoguruSinkStdOut(level=app_settings.log_level).as_dict()])

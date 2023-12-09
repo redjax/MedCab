@@ -1,8 +1,10 @@
-from pydantic import Field, ValidationError, field_validator
-from pydantic_settings import BaseSettings
+from __future__ import annotations
+
+from typing import Union
 
 from dynaconf import settings
-
+from pydantic import Field, ValidationError, field_validator
+from pydantic_settings import BaseSettings
 
 class AppSettings(BaseSettings):
     env: str = Field(default=settings.ENV, env="ENV")
@@ -31,5 +33,17 @@ class APISettings(BaseSettings):
     debug: bool = Field(default=settings.API_DEBUG, env="API_DEBUG")
 
 
+class DBSettings(BaseSettings):
+    type: str = Field(default=settings.DB_TYPE, env="DB_TYPE")
+    host: str | None = Field(default=settings.DB_HOST, env="DB_HOST")
+    port: str | None = Field(default=settings.DB_PORT, env="DB_PORT")
+    username: str | None = Field(default=settings.DB_USERNAME, env="DB_USERNAME")
+    password: str | None = Field(
+        default=settings.DB_PASSWORD, env="DB_DATABASE", repr=False
+    )
+    database: str = Field(default=settings.DB_DATABASE, env="DB_DATABASE")
+
+
 app_settings: AppSettings = AppSettings()
 api_settings: APISettings = APISettings()
+db_settings: DBSettings = DBSettings()

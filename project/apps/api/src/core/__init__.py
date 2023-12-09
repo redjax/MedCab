@@ -1,4 +1,11 @@
-from .config import AppSettings, APISettings
-from .config import app_settings, api_settings
+from __future__ import annotations
 
-from . import constants, validators, enums, api
+from . import api, constants, dependencies, enums, validators
+from .config import (
+    APISettings,
+    AppSettings,
+    DBSettings,
+    api_settings,
+    app_settings,
+    db_settings,
+)
