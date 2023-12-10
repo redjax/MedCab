@@ -10,6 +10,7 @@ from loguru import logger as log
 from red_utils.ext.pydantic_utils.parsers import parse_pydantic_schema
 from sqlalchemy import func, select
 from sqlalchemy.orm import Query, Session
+from sqlalchemy.engine import Row
 
 def validate_db(db: Session = None) -> Session:
     if not db:
@@ -53,76 +54,111 @@ def create_product(product: ProductCreate = None, db: Session = None) -> Product
 
     log.debug(f"Product ({type(product)}): {product}")
 
-    try:
-        with db as sess:
-            # db_product: Query = (
-            #     sess.query(ProductModel)
-            #     .where(ProductModel.strain == product.strain)
-            #     .first()
-            # )
+    
+    with db as sess:
+        db_product: ProductModel | None = None
 
-            ## Placeholder object for db_product. If no matching Product
-            #  is found in the database, this will stay None
-            db_product: ProductModel | None = None
-
-            log.debug(f"Building SELECT statement on .strain")
+        log.debug(f"Building SELECT statement on .strain")
+        try:
             db_product_sel = select(ProductModel).where(
                 ProductModel.strain == product.strain
             )
-            log.debug(f"Executing SELECT ProductModel statement")
-            db_products: list[ProductModel] = sess.execute(db_product_sel).all()
-            log.debug(
-                f"Results: ({type(db_products)}) [items:{len(db_products)}]: {db_products}"
-            )
+        except Exception as exc:
+            msg = Exception(f"Unhandled exception building SELECT Product [{product.strain}] statement. Details: {exc}")
+            log.error(msg)
+            
+        log.debug(f"Executing SELECT ProductModel statement")
+        
+        try:
+            db_products: list[Row] = sess.execute(db_product_sel).all()
+        except Exception as exc:
+            msg = Exception(f"Unhandled exception executing SELECT statement for Product [{product.strain}]. Details: {exc}")
 
-            if db_products is None:
-                log.debug(f"No matching strain found for '{product.strain}. Creating.")
+        log.debug(
+            f"Results: ({type(db_products)}) [items:{len(db_products)}]: {db_products}"
+        )
 
+        if db_products is None:
+            log.debug(f"No matching strain found for '{product.strain}. Creating.")
+
+            try:
                 dump_schema = parse_pydantic_schema(schema=product)
+            except Exception as exc:
+                msg = Exception(f"Unhandled exception dumping Pydantic schema. Details: {exc}")
+                log.error(msg)
 
+            log.debug(f"Dump schema ({type(dump_schema)}): {dump_schema}")
+
+            try:
                 new_product: ProductModel = ProductModel(**dump_schema)
+            except Exception as exc:
+                msg = Exception(f"Unhandled exception convering Product schema to model. Schema ({type(dump_schema)}): {dump_schema}. Details: {exc}")
 
+            try:
                 sess.add(new_product)
                 sess.commit()
 
                 return new_product
 
-            else:
-                log.debug(
-                    f"Found [{len(db_products)}] products with strain name: {product.strain}"
-                )
+            except Exception as exc:
+                msg = Exception(f"Unhandled exception committing Product to database. Details: {exc}")
 
-                for _product in db_products:
-                    log.debug(f"Product:\nStrain: {_product.strain}")
+        else:
+            log.debug(f"Found [{len(db_products)}] Product(s) matching strain {product.strain} in the database.")
+            
+            try:
+                db_product_dicts: list[dict] = [dict(row._asdict()) for row in db_products]
+            except Exception as exc:
+                msg = Exception(f"Unhandled exception converting Row objects to dicts. Details: {exc}")
+                log.error(msg)
+                
+                raise msg
+                
+            log.debug(f"Converted [{len(db_product_dicts)}] Product Row(s) to dict(s)")
+            
+            for _product in db_product_dicts:
+                p = _product["ProductModel"]
+                _product = p
+                log.debug(f"_product ({type(_product)}): {_product}")
+                log.debug(f"Product:\n\tStrain: {_product.strain}\n\tFamily: {_product.family}\n\tForm: {_product.form}")
 
-                    if not _product.form == product.form:
-                        pass
-                    else:
-                        log.debug(
-                            f"Product [{product.strain}] in form {product.form} already exists"
-                        )
-
-                        db_product: ProductModel = _product
-
-                if db_product is None:
+                if not _product.form == product.form:
+                    pass
+                else:
                     log.debug(
-                        f"Product [{product.strain}] in form {product.form} not found in database. Creating."
+                        f"Product [{product.strain}] in form {product.form} already exists"
                     )
 
+                    db_product: ProductModel = _product
+
+            if db_product is None:
+                log.debug(
+                    f"Product [{product.strain}] in form {product.form} not found in database. Creating."
+                )
+
+                try:
                     dump_schema = parse_pydantic_schema(schema=product)
+                except Exception as exc:
+                    msg = Exception(f"Unhandled exception dumping Product schema to dict. Product ({type(product)}): {product}. Details: {exc}")
+                    log.error(msg)
 
+                try:
                     new_product: ProductModel = ProductModel(**dump_schema)
+                except Exception as exc:
+                    msg = Exception(f"Unhandled exception converting Product schema to model. Schema ({type(dump_schema)}): {dump_schema}. Details: {exc}")
 
+                try:
                     sess.add(new_product)
                     sess.commit()
 
                     return new_product
+                
+                except Exception as exc:
+                    msg = Exception(f"Unhandled exception inserting new Product. Product ({type(new_product)}): {new_product}. Details: {exc}")
 
-                else:
-                    return db_product
+            else:
+                return db_product
 
-    except Exception as exc:
-        raise Exception(f"Unhandled exception creating Product. Details: {exc}")
 
 
 def get_all_products(db: Session = None) -> list[ProductModel]:
