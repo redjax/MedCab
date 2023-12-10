@@ -3,9 +3,7 @@
 name = ""
 version = ""
 description = ""
-authors = [
-    {name = "redjax", email = "none@none.com"},
-]
+authors = [{ name = "redjax", email = "none@none.com" }]
 dependencies = [
     "fastapi>=0.100.0",
     "stackprinter>=0.2.10",
@@ -24,25 +22,28 @@ dependencies = [
     "alembic>=1.11.3",
 ]
 requires-python = ">=3.11"
-license = {text = "MIT"}
+license = { text = "MIT" }
 
 [tool.pdm.scripts]
 
 ## Format scripts
+
+## Run black & ruff
+lint = { shell = "pdm run black . && pdm run ruff check . --fix" }
 # Check only, don't fix
 check = { cmd = "black ." }
 #  Check and fix
 format = { cmd = "ruff check . --fix" }
 
 ## Create initial commit
-alembic-init = {cmd = "alembic revision -m 'Initial commit.'"}
+alembic-init = { cmd = "alembic revision -m 'Initial commit.'" }
 
 ## Upgrade Alembic head after making model changes
-alembic-upgrade = {cmd = "alembic upgrade head" }
+alembic-upgrade = { cmd = "alembic upgrade head" }
 
 ## Run migrations
 #  Prompts for a commit message
-alembic-migrate = {shell = "read -p 'Commit message: ' commit_msg && pdm run alembic revision --autogenerate -m '${commit_msg}'" }
+alembic-migrate = { shell = "read -p 'Commit message: ' commit_msg && pdm run alembic revision --autogenerate -m '${commit_msg}'" }
 
 migrations = { shell = "pdm run alembic upgrade head && read -p 'Commit message: ' commit_msg && pdm run alembic revision --autogenerate -m '${commit_msg}'" }
 
@@ -59,8 +60,4 @@ export-dev = { cmd = "pdm export -d -o requirements.dev.txt --without-hashes" }
 # export-ci = { cmd = "pdm export -G ci -o requirements.ci.txt --without-hashes" }
 
 [tool.pdm.dev-dependencies]
-dev = [
-    "ruff>=0.0.277",
-    "black>=23.7.0",
-    "pytest>=7.4.0",
-]
+dev = ["ruff>=0.0.277", "black>=23.7.0", "pytest>=7.4.0"]

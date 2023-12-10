@@ -19,15 +19,15 @@ services:
     working_dir: /app
     command: python start_server.py
     volumes:
-      - ${MEDCAB_API_APP_DIR:-./apps/api/app}:/app
+      - ${MEDCAB_API_APP_DIR:-./apps/api/src}:/app
     ## Comment port definitions if using a proxy container
-    ports:
-      - ${MEDCAB_API_PORT:-8000}:8000
+    # ports:
+    #   - ${MEDCAB_API_PORT:-8000}:8000
     environment:
-      DYNACONF_FASTAPI_TITLE: ${MEDCAB_API_APP_TITLE:-Default App Title}
-      DYNACONF_FASTAPI_DESCRIPTION: ${MEDCAB_API_APP_DESCRIPTION:-Default app description}
-      DYNACONF_FASTAPI_VERSION: ${MEDCAB_API_APP_VER:-"0.1"}
-      DYNACONF_LEVEL: ${MEDCAB_API_LOG_LEVEL:-INFO}
+      DYNACONF_APP_TITLE: ${MEDCAB_API_APP_TITLE:-Default App Title}
+      DYNACONF_APP_DESCRIPTION: ${MEDCAB_API_APP_DESCRIPTION:-Default app description}
+      DYNACONF_APP_VERSION: ${MEDCAB_API_APP_VER:-"0.1"}
+      DYNACONF_LOG_LEVEL: ${MEDCAB_API_LOG_LEVEL:-INFO}
       DYNACONF_ENV: ${MEDCAB_API_APP_ENV:-prod}
       DYNACONF_CONTAINER_ENV: True
 
