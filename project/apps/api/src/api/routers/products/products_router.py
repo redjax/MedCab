@@ -24,13 +24,13 @@ def product_index() -> dict[str, str]:
     log.debug(f"/products root reached")
     return {"msg": "Products root reached"}
 
-@router.get("/all", summary="Return all Products from the database.")
+@router.get("/all", summary="Return all Products from the database.", description="Loads all objects from the database and returns them as a list of JSON objects.", tags=["GET"])
 def get_all_products_from_db(db: crud = Depends(get_db)):
     all_products = crud.get_all_products(db=db)
     
     return all_products
 
-@router.get("/count", summary="Get cound of Products in database")
+@router.get("/count", summary="Get cound of Products in database", description="Deletes ALL Product objects from the database.", tags=["GET"])
 def get_count_products_from_db(db: crud.Session = Depends(get_db)):
     product_count: int = crud.count_product(db=db)
     
@@ -39,7 +39,7 @@ def get_count_products_from_db(db: crud.Session = Depends(get_db)):
     
     return JSONResponse(status_code=status.HTTP_200_OK, content={"count": product_count})
 
-@router.get("/strain/{strain_name}", summary="Retrieve Product by strin name")
+@router.get("/strain/{strain_name}", summary="Retrieve Product by strin name", description="Retrieve Product(s) matching strain value.", tags=["GET"])
 def get_product_from_db_by_strain(
     strain_name: str = None, db: crud.Session = Depends(get_db)
 ):
@@ -56,7 +56,7 @@ def get_product_from_db_by_strain(
     return db_product
 
 
-@router.get("/id/{id}", summary="Retrieve Product by id")
+@router.get("/id/{id}", summary="Retrieve Product by id", description="Search and return the database Product matching passed ID.", tags=["GET"])
 def get_product_from_db_by_id(id: uuid.UUID = None, db: crud.Session = Depends(get_db)):
     db_product = crud.get_product_by_id(id=id, db=db)
 
@@ -72,7 +72,7 @@ def get_product_from_db_by_id(id: uuid.UUID = None, db: crud.Session = Depends(g
 
 
 @router.get(
-    "/family/{family}", summary="Retrieve Products by family (indica, sativa, hybrid)"
+    "/family/{family}", summary="Retrieve Products by family (indica, sativa, hybrid)", tags=["GET"]
 )
 def get_products_from_db_by_strain(family: str, db: crud.Session = Depends(get_db)):
     db_products = crud.get_products_by_family(family=family, db=db)
@@ -86,7 +86,7 @@ def get_products_from_db_by_strain(family: str, db: crud.Session = Depends(get_d
     return db_products
 
 
-@router.get("/form/{form}", summary="Retrieve Products by form")
+@router.get("/form/{form}", summary="Retrieve Products by form", tags=["GET"])
 def get_products_from_db_by_form(form: str, db: crud.Session = Depends(get_db)):
     db_products = crud.get_products_by_form(form=form, db=db)
 
@@ -102,9 +102,9 @@ def get_products_from_db_by_form(form: str, db: crud.Session = Depends(get_db)):
 @router.post(
     "/create",
     summary="Add new Product to database",
-    description="Input a Product, convert to a ProductModel & add to database",
+    description="Input a Product, convert to a ProductModel & add to database.",
     response_model=Product,
-    response_model_exclude_unset=True,
+    response_model_exclude_unset=True,tags=["POST"]
 )
 def create_product_in_db(product: Product, db: crud.Session = Depends(get_db)):
     db_product = crud.create_product(product=product, db=db)
@@ -120,7 +120,7 @@ def create_product_in_db(product: Product, db: crud.Session = Depends(get_db)):
     return db_product
 
 
-@router.post("/update/id/{id}", summary="Update a Product by ID")
+@router.post("/update/id/{id}", summary="Update a Product by ID", tags=["POST"])
 def update_product_in_db_by_id(
     id: uuid.UUID = None, product: Product = None, db: crud.Session = Depends(get_db)
 ):
@@ -135,24 +135,24 @@ def update_product_in_db_by_id(
     return db_product_update
 
 
-@router.post("/update/strain/{strain_name}", summary="Update a Product by strain name")
-def update_product_in_db_by_name(
-    strain_name: str = None, product: Product = None, db: crud.Session = Depends(get_db)
-):
-    db_product_update = crud.update_product_by_strain(
-        strain_name=strain_name, product=product, db=db
-    )
+# @router.post("/update/strain/{strain_name}", summary="Update a Product by strain name", tags=["POST"])
+# def update_product_in_db_by_name(
+#     strain_name: str = None, product: Product = None, db: crud.Session = Depends(get_db)
+# ):
+#     db_product_update = crud.update_product_by_strain(
+#         strain_name=strain_name, product=product, db=db
+#     )
 
-    if not db_product_update:
-        return JSONResponse(
-            status_code=status.HTTP_404_NOT_FOUND,
-            content={"error": f"Product not found by name: {strain_name}"},
-        )
+#     if not db_product_update:
+#         return JSONResponse(
+#             status_code=status.HTTP_404_NOT_FOUND,
+#             content={"error": f"Product not found by name: {strain_name}"},
+#         )
 
-    return db_product_update
+#     return db_product_update
 
 
-@router.delete("/id/{id}", summary="Delete a Product by ID")
+@router.delete("/id/{id}", summary="Delete a Product by ID", description="Search database for Product matching passed ID and delete it.", tags=["DELETE"])
 def delete_product_from_db_by_id(id: uuid.UUID, db: crud.Session = Depends(get_db)):
     _deleted = crud.delete_product_by_id(id=id, db=db)
 
@@ -162,16 +162,17 @@ def delete_product_from_db_by_id(id: uuid.UUID, db: crud.Session = Depends(get_d
     return JSONResponse(status_code=202, content=f"Deleted Product with ID: {id}")
 
 
-@router.delete("/all", summary="Delete all Products")
-def delete_all_products_from_db(db: crud.Session = Depends(get_db)):
-    _deleted = crud.delete_all_products(db=db)
+if not app_settings.env == "prod":
+    @router.delete("/all", summary="Delete all Products", description="Deletes all Product objects from the database. Use with caution. This endpoint is disabled if the app is running in 'prod' mode.", tags=["DELETE"])
+    def delete_all_products_from_db(db: crud.Session = Depends(get_db)):
+        _deleted = crud.delete_all_products(db=db)
 
-    if not _deleted:
+        if not _deleted:
+            return JSONResponse(
+                status_code=404, content=f"No Products exist in the database"
+            )
+
         return JSONResponse(
-            status_code=404, content=f"No Products exist in the database"
+            status_code=202,
+            content=f"Deleted all Products. Number of deleted records: {len(_deleted)}",
         )
-
-    return JSONResponse(
-        status_code=202,
-        content=f"Deleted all Products. Number of deleted records: {len(_deleted)}",
-    )

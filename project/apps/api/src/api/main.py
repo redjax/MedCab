@@ -9,7 +9,7 @@ from pathlib import Path
 from api.routers import api_router
 
 from core import api_settings, app_settings
-from core.api import CUSTOM_TAGS
+from core.constants import CUSTOM_TAGS
 from core.dependencies import Base, create_base_metadata, engine, db_config
 
 from fastapi import Depends, FastAPI, Request
@@ -27,7 +27,7 @@ from red_utils.ext.fastapi_utils import (
     logging_dependency,
     setup_uvicorn_logging,
     tags_metadata,
-    update_tags_metadata,
+    update_tags_metadata
 )
 from red_utils.ext.fastapi_utils.validators import validate_openapi_tags
 from red_utils.ext.loguru_utils import (
@@ -53,7 +53,7 @@ allow_credentials = True
 allowed_methods = ["*"]
 allowed_headers = ["*"]
 
-update_tags_metadata(tags_metadata=tags_metadata, update_metadata=CUSTOM_TAGS)
+tags_metadata = update_tags_metadata(tags_metadata=tags_metadata, update_metadata=CUSTOM_TAGS)
 
 create_base_metadata(Base(), engine=engine)
 
