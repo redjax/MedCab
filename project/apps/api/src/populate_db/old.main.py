@@ -1,3 +1,6 @@
+import sys
+sys.path.append(".")
+
 from typing import Union, Optional
 from pathlib import Path
 
@@ -286,18 +289,23 @@ def remove_all_items() -> bool:
         log.error(f"Invalid choice: {remove_choice}")
         remove_all_items()
 
+def run_database_inserts():
+    
+    log.info(f"Loading products from {example_products}")
+    products = load_json_data_objs(search_path=example_products)
+    log.info(f"Loaded [{len(products)}] products into dicts")
+    # log.debug(f"Products: {products}")
 
-log.info(f"Loading products from {example_products}")
-products = load_json_data_objs(search_path=example_products)
-log.info(f"Loaded [{len(products)}] products into dicts")
-# log.debug(f"Products: {products}")
+    log.info(f"Testing connection to {api.healthcheck_url}")
+    connectivity: bool = test_connection(client=connectivity_test_client)
+    log.info(f"Connection success: [{connectivity}]")
 
-log.info(f"Testing connection to {api.healthcheck_url}")
-connectivity: bool = test_connection(client=connectivity_test_client)
-log.info(f"Connection success: [{connectivity}]")
+    log.info(f"Populating database with [{len(products)}] products")
+    load_success = load_data_into_db(client=client, data=products)
+    log.debug(f"Load success ({type(load_success)}): {load_success}")
 
-log.info(f"Populating database with [{len(products)}] products")
-load_success = load_data_into_db(client=client, data=products)
-log.debug(f"Load success ({type(load_success)}): {load_success}")
-
-_remove = remove_all_items()
+    _remove = remove_all_items()
+    
+if __name__ == "__main__":
+    
+    run_database_inserts()

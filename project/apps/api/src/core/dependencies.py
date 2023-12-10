@@ -36,7 +36,8 @@ def get_db():
     db = SessionLocal()
 
     try:
-        yield db
+        return db
+
     except Exception as exc:
         raise Exception(f"Unhandled exception getting database session. Details: {exc}")
 
