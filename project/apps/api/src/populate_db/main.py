@@ -138,6 +138,7 @@ def insert_product_into_db(client: httpx.Client = None, product_dict: dict = Non
                 return False
             
             insert_res = c.post(url, data=req_data)
+            log.debug(f"[{insert_res.status_code}: {insert_res.reason_phrase}]")
             
             if insert_res.status_code == 200:
                 log.info(f"Success: insert [{product_dict['strain']}]")
@@ -233,7 +234,16 @@ def main(api: APIServer = None, products_json_dir: Path = EXAMPLE_SIMPLIFIED_PRO
         exit(1)
         
     insert_products = loop_insert_products(products=sample_dicts, api=api)
-    log.debug(f"Insert products res: {type(insert_products)}")
+    log.debug(f"Insert products res: {type(insert_products)}. Keys: {insert_products.keys()}")
+    
+    if len(insert_products["successes"]) >0:
+        for s in insert_products["successes"]:
+            log.debug(f"Success ({type(s)}): {s}")
+            
+    if len(insert_products["failures"]) > 0:
+        for f in insert_products["failures"]:
+            log.debug(f"Failure ({type(f)}): {f}")
+
     
 
 if __name__ == "__main__":
