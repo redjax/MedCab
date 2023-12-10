@@ -6,11 +6,14 @@ from .models import ProductModel
 from .schemas import Product, ProductCreate
 
 from core.validators.product import VALID_FAMILIES, VALID_FORMS
+from core.utils.crud_utils import convert_sqla_rows_to_dicts
+
 from loguru import logger as log
 from red_utils.ext.pydantic_utils.parsers import parse_pydantic_schema
 from sqlalchemy import func, select
 from sqlalchemy.orm import Query, Session
 from sqlalchemy.engine import Row
+
 
 def validate_db(db: Session = None) -> Session:
     if not db:
@@ -104,32 +107,24 @@ def create_product(product: ProductCreate = None, db: Session = None) -> Product
                 msg = Exception(f"Unhandled exception committing Product to database. Details: {exc}")
 
         else:
-            log.debug(f"Found [{len(db_products)}] Product(s) matching strain {product.strain} in the database.")
-            
-            try:
-                db_product_dicts: list[dict] = [dict(row._asdict()) for row in db_products]
-            except Exception as exc:
-                msg = Exception(f"Unhandled exception converting Row objects to dicts. Details: {exc}")
-                log.error(msg)
-                
-                raise msg
+            log.debug(f"Found [{len(db_products)}] Product(s) matching strain {product.strain} in the database.")            
+            db_product_dicts: list[dict] = convert_sqla_rows_to_dicts(rows=db_products)
                 
             log.debug(f"Converted [{len(db_product_dicts)}] Product Row(s) to dict(s)")
             
             for _product in db_product_dicts:
-                p = _product["ProductModel"]
-                _product = p
-                log.debug(f"_product ({type(_product)}): {_product}")
-                log.debug(f"Product:\n\tStrain: {_product.strain}\n\tFamily: {_product.family}\n\tForm: {_product.form}")
+                p: ProductModel = _product["ProductModel"]
+                log.debug(f"_product ({type(p)}): {p}")
+                # log.debug(f"Product:\n\tStrain: {p.strain}\n\tFamily: {p.family}\n\tForm: {p.form}")
 
-                if not _product.form == product.form:
+                if not p.form == product.form:
                     pass
                 else:
                     log.debug(
                         f"Product [{product.strain}] in form {product.form} already exists"
                     )
 
-                    db_product: ProductModel = _product
+                    db_product: ProductModel = p
 
             if db_product is None:
                 log.debug(

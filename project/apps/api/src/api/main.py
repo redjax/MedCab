@@ -45,6 +45,9 @@ logger_sinks = [
     LoguruSinkErrFile(sink=f"{LOG_DIR}/api.error.log").as_dict(),
 ]
 
+init_logger(sinks=logger_sinks)
+setup_uvicorn_logging(level="DEBUG")
+
 allowed_origins = ["*"]
 allow_credentials = True
 allowed_methods = ["*"]

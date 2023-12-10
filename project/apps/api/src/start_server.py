@@ -12,18 +12,18 @@ from core.config import api_settings, app_settings
 from loguru import logger as log
 from pydantic import BaseModel
 from red_utils.ext.fastapi_utils import setup_uvicorn_logging
-from red_utils.ext.loguru_utils import init_logger
+from red_utils.ext.loguru_utils import init_logger, LoguruSinkFileDefault, LoguruSinkStdOut
 import uvicorn
 
 ENV: str = app_settings.env
 CONTAINER_ENV: bool = app_settings.container_env
 env_string: str = f"[env:{ENV.upper()}|container:{CONTAINER_ENV}]"
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
     ## If this file was run directly, initialize logger.
-    init_logger()
+    # init_logger([LoguruSinkStdOut(level=app_settings.log_level).as_dict(), LoguruSinkFileDefault(sink="logs/api.server.log", colorize=False).as_dict(), LoguruSinkFileDefault(sink="logs/api.err.log", level="ERROR", colorize=False).as_dict()])
     ## Configure Uvicorn logging
-    setup_uvicorn_logging(level=app_settings.log_level)
+    # setup_uvicorn_logging(level=app_settings.log_level)
 
 
 class UvicornCustomServer(BaseModel):

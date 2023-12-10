@@ -8,8 +8,9 @@ import json
 import httpx
 import time
 
+from .schemas import APIServer
 from core.constants import DATA_DIR
-from core.config import app_settings
+from core.config import app_settings, api_settings
 
 from pydantic import BaseModel, Field, field_validator, ValidationError
 from loguru import logger as log
@@ -19,37 +20,15 @@ from red_utils.ext.httpx_utils import default_headers, constants, get_req_client
 from red_utils.ext.fastapi_utils import default_openapi_url
 from red_utils.std.path_utils import crawl_dir
 
+if __name__ == "__main__":
+    init_logger([LoguruSinkStdOut(level=app_settings.log_level).as_dict()])
+
 EXAMPLE_SCHEMAS_DIR: Path = Path(f"{DATA_DIR}/example_schemas")
 EXAMPLE_PRODUCTS_DIR: Path = Path(f"{EXAMPLE_SCHEMAS_DIR}/products")
 EXAMPLE_SIMPLIFIED_PRODUCTS_DIR: Path = Path(f"{EXAMPLE_PRODUCTS_DIR}/simplified_for_testing")
 
+API: APIServer = APIServer()
 
-class APIServer(BaseModel):
-    proto: str = Field(default="http", description="Protocol")
-    url: str = Field(default="127.0.0.1", description="Remote host request URL")
-    port: int = Field(default=8000, description="Remote host port")
-    api_str: str = Field(default="/api/v1", description="API endpoint, i.e. /api/v1")
-    
-    @property
-    def base_url(self) -> str:
-        """Base request URL."""
-        _url: str = f"{self.proto}://{self.url}:{self.port}"
-        
-        return _url
-    
-    @property
-    def healthcheck_url(self) -> str:
-        """Healtcheck."""
-        _url: str = f"{self.base_url}/health"
-        
-        return _url
-    
-    @field_validator("proto")
-    def validate_prototype(cls, v) -> str:
-        valid_protos: list[str] = ["http", "https"]
-        
-        if not v in valid_protos:
-            raise ValueError(f"Invalid protocol: {v}. Must be one of {valid_protos}")
 
 
 def test_connection(client: httpx.Client = None, url: str = None) -> bool:
@@ -208,7 +187,15 @@ def loop_insert_products(products: list[dict] = None, api: APIServer = None) -> 
     return {"successes": successes, "failures": failures}
 
 
-def main(api: APIServer = None, products_json_dir: Path = EXAMPLE_SIMPLIFIED_PRODUCTS_DIR):
+def insert_samples(api: APIServer = None, products_json_dir: Path = EXAMPLE_SIMPLIFIED_PRODUCTS_DIR):
+    """Load samples from data directory & insert them into database via HTTP request.
+    
+    Params:
+    -------
+    - api (APIServer): An initialized APIServer object.
+    - products_json_dir (Path): Path where sample .JSON files are stored. These files will be loaded into
+        objects that will be passed to the API to create them in the database.
+    """
     sample_dir_crawl: dict[str, list["str"]] = crawl_dir(in_dir=products_json_dir, ext_filter=".json")
     sample_files: list[Path] = sample_dir_crawl["files"]
     log.info(f"Found [{len(sample_files)}] simplified example Product(s)")
@@ -243,13 +230,17 @@ def main(api: APIServer = None, products_json_dir: Path = EXAMPLE_SIMPLIFIED_PRO
     if len(insert_products["failures"]) > 0:
         for f in insert_products["failures"]:
             log.debug(f"Failure ({type(f)}): {f}")
+            
+    return insert_products
+
+
+def main():
+    log.info(f"[env:{app_settings.env}|container:{app_settings.container_env}] App Start")
+    insert_samples()
 
     
 
 if __name__ == "__main__":
-    init_logger([LoguruSinkStdOut(level=app_settings.log_level).as_dict()])
-    log.info(f"[env:{app_settings.env}|container:{app_settings.container_env}] App Start")
-    
     api: APIServer = APIServer(port=8000)
     log.debug(f"API URL string: {api.base_url}")
     

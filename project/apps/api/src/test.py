@@ -16,6 +16,8 @@ from red_utils.core.constants import CACHE_DIR, DATA_DIR, LOG_DIR, SERIALIZE_DIR
 from red_utils.ext.loguru_utils import LoguruSinkStdOut, init_logger
 from red_utils.std import path_utils
 
+from manage_db import insert_samples, API
+
 if __name__ == "__main__":
     init_logger(sinks=[LoguruSinkStdOut(level=app_settings.log_level).as_dict()])
     path_utils.ensure_dirs_exist(
@@ -26,3 +28,5 @@ if __name__ == "__main__":
     )
     log.debug(f"App Settings: {app_settings}")
     log.debug(f"API Settings: {api_settings}")
+    
+    insert_samples()
