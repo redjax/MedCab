@@ -12,21 +12,9 @@
 			"name": "All Apps",
 			"path": "../project/apps"
 		},
-		// {
-		// 	"name": "docker/proxy",
-		// 	"path": "../project/apps/proxy/"
-		// },
-		// {
-		// 	"name": "docker/api",
-		// 	"path": "../project/apps/api/app"
-		// },
-		// {
-		// 	"name": "docker/frontend",
-		// 	"path": "../project/apps/frontend/app"
-		// }
 		{
-			"name": "Medcab Backend API - OLD",
-			"path": "../project/apps/api.bak/"
+			"name": "MedCab Frontend",
+			"path": "../project/apps/frontend/app"
 		},
 		{
 			"name": "MedCab Backend API",
