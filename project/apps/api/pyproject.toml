@@ -37,16 +37,15 @@ check = { cmd = "black ." }
 #  Check and fix
 format = { cmd = "ruff check . --fix" }
 
+## Alembic scripts
+
 ## Create initial commit
-alembic-init = { cmd = "alembic revision -m 'Initial commit.'" }
-
+alembic-init = { shell = "cd src && pdm run alembic revision -m 'Initial commit.'" }
 ## Upgrade Alembic head after making model changes
-alembic-upgrade = { cmd = "alembic upgrade head" }
-
+alembic-upgrade = { shell = "cd src && pdm run alembic upgrade head" }
 ## Run migrations
 #  Prompts for a commit message
 alembic-migrate = { shell = "cd src && read -p 'Commit message: ' commit_msg && pdm run alembic revision --autogenerate -m '${commit_msg}'" }
-
 migrations = { shell = "cd src && pdm run alembic upgrade head && read -p 'Commit message: ' commit_msg && pdm run alembic revision --autogenerate -m '${commit_msg}'" }
 
 ## Start scripts
