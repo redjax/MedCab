@@ -44,11 +44,11 @@ class ProductModel(Base):
     total_cbd: Mapped[Decimal | None] = mapped_column(
         sa.Numeric(precision=3), default=0.0
     )
+    weight: Mapped[float] = mapped_column(
+        sa.Float(asdecimal=True, decimal_return_scale=4)
+    )
 
     # favorite: Mapped[bool] = mapped_column(sa.Boolean, index=True)
-    # weight: Mapped[float] = mapped_column(
-    #     sa.Float(asdecimal=True, decimal_return_scale=4)
-    # )
     # purchaseDate: Mapped[date] = mapped_column(sa.Date, nullable=True)
     # dispensary: Mapped[str] = mapped_column(sa.String)
     # brand: Mapped[str] = mapped_column(sa.String, index=True)
