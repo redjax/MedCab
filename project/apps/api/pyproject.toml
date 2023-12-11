@@ -19,7 +19,7 @@ dependencies = [
     "pydantic-settings>=2.0.1",
     "red-utils>=0.1.16",
     "dynaconf>=3.2.2",
-    "alembic>=1.11.3",
+    "alembic>=1.13.0",
     "pandas>=2.1.4",
     "fastparquet>=2023.10.1",
 ]
@@ -45,9 +45,9 @@ alembic-upgrade = { cmd = "alembic upgrade head" }
 
 ## Run migrations
 #  Prompts for a commit message
-alembic-migrate = { shell = "read -p 'Commit message: ' commit_msg && pdm run alembic revision --autogenerate -m '${commit_msg}'" }
+alembic-migrate = { shell = "cd src && read -p 'Commit message: ' commit_msg && pdm run alembic revision --autogenerate -m '${commit_msg}'" }
 
-migrations = { shell = "pdm run alembic upgrade head && read -p 'Commit message: ' commit_msg && pdm run alembic revision --autogenerate -m '${commit_msg}'" }
+migrations = { shell = "cd src && pdm run alembic upgrade head && read -p 'Commit message: ' commit_msg && pdm run alembic revision --autogenerate -m '${commit_msg}'" }
 
 ## Start scripts
 #  Run main app or script. Launches from app/
