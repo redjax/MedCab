@@ -12,7 +12,9 @@ from red_utils.ext.sqlalchemy_utils import (
     saSQLiteConnection,
 )
 
+log.debug(f"Database settings: {db_settings}")
 log.debug(f"Matching DB Type to: {db_settings.type}")
+
 match db_settings.type:
     case "sqlite":
         log.debug(f"Detected SQLite DB")

@@ -45,7 +45,7 @@ class ProductModel(Base):
         sa.Numeric(precision=3), default=0.0
     )
     weight: Mapped[float] = mapped_column(
-        sa.Float(asdecimal=True, decimal_return_scale=4)
+        sa.Numeric(precision=3), default=0.0
     )
 
     # favorite: Mapped[bool] = mapped_column(sa.Boolean, index=True)

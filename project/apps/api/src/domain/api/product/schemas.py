@@ -21,7 +21,7 @@ class ProductBase(BaseModel):
     form: Optional[str] = Field(default=None)
     total_thc: Decimal = Field(default=0.0, max_digits=5, decimal_places=3)
     total_cbd: Decimal = Field(default=0.0, max_digits=5, decimal_places=3)
-    weight: float = Field(default=0.0)
+    weight: Decimal = Field(default=0.0, max_digits=5, decimal_places=3)
     
     # purchaseDate: Optional[date] = Field(default=None)
     # dispensary: Optional[str] = Field(default=None)

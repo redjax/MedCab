@@ -107,7 +107,10 @@ def get_products_from_db_by_form(form: str, db: crud.Session = Depends(get_db)):
     response_model_exclude_unset=True,tags=["POST"]
 )
 def create_product_in_db(product: Product, db: crud.Session = Depends(get_db)):
-    db_product = crud.create_product(product=product, db=db)
+    try:
+        db_product = crud.create_product(product=product, db=db)
+    except Exception as exc:
+        raise Exception(f"Unhandled exception creating Product '{product.strain}. Details: {exc}")
 
     if not db_product:
         return JSONResponse(

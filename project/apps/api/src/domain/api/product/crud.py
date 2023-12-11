@@ -74,12 +74,17 @@ def create_product(product: ProductCreate = None, db: Session = None) -> Product
         
         try:
             db_products: list[Row] = sess.execute(db_product_sel).all()
+
         except Exception as exc:
             msg = Exception(f"Unhandled exception executing SELECT statement for Product [{product.strain}]. Details: {exc}")
+            log.error(msg)
+            
+            raise msg
 
-        log.debug(
-            f"Results: ({type(db_products)}) [items:{len(db_products)}]: {db_products}"
-        )
+        if db_products is not None:
+            log.debug(
+                f"Results: ({type(db_products)}) [items:{len(db_products)}]: {db_products}"
+            )
 
         if db_products is None:
             log.debug(f"No matching strain found for '{product.strain}. Creating.")

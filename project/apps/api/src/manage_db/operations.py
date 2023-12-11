@@ -174,6 +174,8 @@ def loop_insert_products(products: list[dict] = None, api: APIServer = None) -> 
             
             pass
         
+        input("PAUSE")
+        
     log.debug(f"Successes: [{len(successes)}]. Failures: [{len(failures)}]")
     
     return {"successes": successes, "failures": failures}
