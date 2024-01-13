@@ -15,6 +15,7 @@ dependencies = [
     "sqlalchemy>=2.0.25",
     "loguru>=0.7.2",
     "msgpack>=1.0.7",
+    "pendulum>=3.0.0",
 ]
 requires-python = "==3.11.*"
 readme = "README.md"

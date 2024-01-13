@@ -8,9 +8,7 @@ import uuid
 
 from core.validators.product import VALID_FAMILIES, VALID_FORMS
 from loguru import logger as log
-from pydantic import BaseModel, Field, ValidationError, validator
-
-# from .models import ProductModel, TerpeneModel
+from pydantic import BaseModel, Field, ValidationError, field_validator, computed_field, ConfigDict
 
 
 class ProductBase(BaseModel):
@@ -37,7 +35,7 @@ class ProductBase(BaseModel):
     # notes: Optional[list[ProductNote]] = None
     # images: Optional[list[ProductImage]] = None
 
-    @validator("family")
+    @field_validator("family")
     def validate_strain(cls, v) -> str:
         if not v:
             return None
@@ -47,7 +45,7 @@ class ProductBase(BaseModel):
 
         return v
 
-    @validator("form")
+    @field_validator("form")
     def validate_form(cls, v) -> str:
         if not v:
             return None
@@ -70,13 +68,16 @@ class ProductBase(BaseModel):
 
 
 class ProductCreate(ProductBase):
+    model_config = ConfigDict(from_attributes=True)
     id: uuid.UUID
 
-    class Config:
-        from_attributes = True
+    # class Config:
+    #     from_attributes = True
 
 
 class ProductUpdate(ProductBase):
+    model_config = ConfigDict(from_attributes=True)
+    
     id: uuid.UUID | None = None
     strain: str | None = None
     family: str | None = None
@@ -99,8 +100,8 @@ class ProductUpdate(ProductBase):
     # notes: list[ProductNote] | None = None
     # images: list[ProductImage] | None = None
 
-    class Config:
-        from_attributes = True
+    # class Config:
+    #     from_attributes = True
 
 
 class Product(ProductBase):

@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from core.dependencies import APP_SETTINGS, ENSURE_DIRS
 from domain.product import Product
+from domain.purchase import Purchase
 from examples.products import load_example_products_simplified
 
 from red_utils.std.path_utils import ensure_dirs_exist
@@ -25,3 +26,5 @@ if __name__ == "__main__":
         
     for p in products:
         log.debug(f"Product ({type(p)}): {p}")
+        purchase: Purchase = Purchase(date="2024-01-13", product=p)
+        log.debug(f"Purchase: {purchase}")
