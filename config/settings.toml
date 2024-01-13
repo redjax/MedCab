@@ -1,0 +1,23 @@
+[default]
+
+env = "prod"
+container_env = false
+log_level = "INFO"
+
+app_data_dir = ".data"
+app_logs_dir = "logs"
+app_cache_dir = ".cache"
+app_serial_dir = ".serial"
+
+
+[dev]
+
+env = "dev"
+log_level = "DEBUG"
+
+app_data_dir = ".data-dev"
+app_logs_dir = "logs-dev"
+app_cache_dir = ".cache-dev"
+app_serial_dir = ".serial-dev"
+
+[prod]

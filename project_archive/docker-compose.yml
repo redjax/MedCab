@@ -1,0 +1,74 @@
+version: "3.8"
+
+networks:
+  proxy_net:
+    driver: bridge
+
+volumes:
+  nginx_cache:
+
+
+services:
+
+  api:
+    container_name: medcab_api
+    restart: unless-stopped
+    build:
+      context: apps/api
+      dockerfile: ${MEDCAB_API_DOCKERFILE:-Dockerfile}
+    working_dir: /app
+    command: python start_server.py
+    volumes:
+      - ${MEDCAB_API_APP_DIR:-./apps/api/src}:/app
+    ## Comment port definitions if using a proxy container
+    # ports:
+    #   - ${MEDCAB_API_PORT:-8000}:8000
+    environment:
+      DYNACONF_APP_TITLE: ${MEDCAB_API_APP_TITLE:-Default App Title}
+      DYNACONF_APP_DESCRIPTION: ${MEDCAB_API_APP_DESCRIPTION:-Default app description}
+      DYNACONF_APP_VERSION: ${MEDCAB_API_APP_VER:-"0.1"}
+      DYNACONF_LOG_LEVEL: ${MEDCAB_API_LOG_LEVEL:-INFO}
+      DYNACONF_ENV: ${MEDCAB_API_APP_ENV:-prod}
+      DYNACONF_CONTAINER_ENV: True
+
+      ## Database
+      # DYNACONF_DB_TYPE: ${MEDCAB_API_DB_TYPE:-postgres}
+      # DYNACONF_DB_HOST: ${MEDCAB_API_DB_HOST:-db}
+      # DYNACONF_DB_USERNAME: ${MEDCAB_API_DB_USERNAME:-postgres}
+      # DYNACONF_DB_PASSWORD: ${MEDCAB_API_DB_PASSWORD:-postgres}
+      # DYNACONF_DB_PORT: ${MEDCAB_API_DB_PORT:-5432}
+      # DYNACONF_DB_DATABASE: ${MEDCAB_API_DB_DATABASE:-postgres}
+
+      DYNACONF_DB_TYPE: ${MEDCAB_API_DB_TYPE}
+      DYNACONF_DB_HOST: ${MEDCAB_API_DB_HOST}
+      DYNACONF_DB_USERNAME: ${MEDCAB_API_DB_USERNAME}
+      DYNACONF_DB_PASSWORD: ${MEDCAB_API_DB_PASSWORD}
+      DYNACONF_DB_PORT: ${MEDCAB_API_DB_PORT}
+      DYNACONF_DB_DATABASE: ${MEDCAB_API_DB_DATABASE}
+    healthcheck:
+      test: curl --fail http://backend:8000/health
+      interval: 5m
+      timeout: 10s
+      retries: 5
+      start_period: 10s
+    networks:
+      - proxy_net
+
+  ## Nginx
+  proxy:
+    image: nginx:latest
+    container_name: medcab_proxy
+    restart: unless-stopped
+    # env_file: ./env_files/nginx_proxy.env
+    volumes:
+      - ${NGINX_CONF_DIR:-./apps/proxy/nginx/nginx.conf}:/etc/nginx/nginx.conf
+      - ${NGINX_SITES_ENABLED_DIR:-./apps/proxy/nginx/conf/sites-enabled}:/etc/nginx/sites-enabled
+      - ${NGINX_CONF_EXTRA_DIR:-./apps/proxy/nginx/conf/extra}:/etc/nginx/extra
+      - ${NGINX_LOGS_DIR:-./apps/proxy/nginx/logs}:/var/log/nginx/
+      - ${NGINX_CACHE_DIR:-nginx_cache}:/data/nginx/cache
+    ports:
+      - ${NGINX_HTTP_PORT:-80}:80
+    environment:
+      BACKEND_SERVER: ${NGINX_BACKEND_SERVER:-127.0.0.1}
+    networks:
+      - proxy_net

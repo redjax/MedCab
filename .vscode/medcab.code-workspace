@@ -1,0 +1,30 @@
+{
+	"folders": [
+		{
+			"name": "Git Root",
+			"path": ".."
+		} //,
+		// {
+		// 	"name": "Docker Root",
+		// 	"path": "../project"
+		// },
+		// {
+		// 	"name": "All Apps",
+		// 	"path": "../project/apps"
+		// },
+		// {
+		// 	"name": "MedCab Frontend",
+		// 	"path": "../project/apps/frontend/app"
+		// },
+		// {
+		// 	"name": "MedCab Backend API",
+		// 	"path": "../project/apps/api"
+		// }
+	],
+	"settings": {
+		"[python]": {
+			"editor.defaultFormatter": "ms-python.black-formatter"
+		},
+		"python.formatting.provider": "none"
+	}
+}
