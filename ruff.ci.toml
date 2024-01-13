@@ -1,3 +1,15 @@
+##############################################################
+#                                                            #
+# DELETE THIS SECTION WHEN COPYING INTO A REPOSITORY/PROJECT #
+#                                                            #
+#######################################################################################
+# Custom Ruff configuration for running in a CI pipeline.                             #
+#                                                                                     #
+# The rules configured in this file are a bit more lax than in my standard ruff.toml. #
+# These rules allow for certain errors like missing docstrings.                       #
+#                                                                                     #
+#######################################################################################
+
 ## Set assumed Python version
 target-version = "py311"
 
@@ -25,13 +37,19 @@ ignore = [
     "D101", ## missing-docstring-in-public-class
     "D102", ## missing-docstring-in-public-method
     "D103", ## Missing docstring in public function
+    "D105", ## Missing docstring in magic method
     "D106", ## missing-docstring-in-public-nested-class
+    "D200", ## One-line docstring should fit on one line
     "D203", ## one-blank-line-before-class
+    "D205", ## 1 blank line required between summary line and description
     "D213", ## multi-line-summary-second-line
+    "D401", ## First line of docstring should be in imperative mood
+    "E402", ## Module level import not at top of file
     "D406", ## Section name should end with a newline
     "D407", ## Missing dashed underline after section
+    "D417", ## Missing argument descriptions in the docstring for [variables]
     "E501", ## Line too long
-    "E402", ## Module level import not at top of file
+    "E722", ## Do note use bare `except`
     "F401", ## imported but unused
 ]
 
