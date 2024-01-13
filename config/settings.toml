@@ -1,0 +1,20 @@
+##
+# My standard Dynaconf settings.toml file.
+#
+# I normally put this file in a directory like src/config/settings.toml, then update my config.py, adding
+# root_path="config" to the Dynaconf instance.
+##
+
+[default]
+
+env = "prod"
+container_env = false
+log_level = "INFO"
+
+
+[dev]
+
+env = "dev"
+log_level = "DEBUG"
+
+[prod]
