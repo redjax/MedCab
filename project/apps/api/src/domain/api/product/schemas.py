@@ -16,6 +16,7 @@ from pydantic import BaseModel, Field, ValidationError, validator
 
 
 class ProductBase(BaseModel):
+    favorite: bool = Field(default=False)
     strain: str = Field(default=None)
     family: str = Field(default=None)
     form: Optional[str] = Field(default=None)
