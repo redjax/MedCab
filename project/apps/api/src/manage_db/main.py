@@ -26,7 +26,7 @@ API: APIServer = APIServer()
 
 def main(api: APIServer = API):
     log.info(f"[env:{app_settings.env}|container:{app_settings.container_env}] App Start")
-    insert_samples()
+    insert_samples(pause_between_inserts=False)
     remove_all_items(api=api)
 
     
