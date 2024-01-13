@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from core.dependencies import APP_SETTINGS, ENSURE_DIRS
+from domain.product import Product
 from examples.products import load_example_products_simplified
 
 from red_utils.std.path_utils import ensure_dirs_exist
@@ -15,3 +16,7 @@ if __name__ == "__main__":
     
     ex_products = load_example_products_simplified()
     log.debug(f"Example Products: {ex_products}")
+    
+    for p in ex_products:
+        product: Product = Product.model_validate(p)
+        log.debug(f"Product: {product}")
