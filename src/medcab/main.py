@@ -17,6 +17,11 @@ if __name__ == "__main__":
     ex_products = load_example_products_simplified()
     log.debug(f"Example Products: {ex_products}")
     
+    products: list[Product] = []
+    
     for p in ex_products:
         product: Product = Product.model_validate(p)
-        log.debug(f"Product: {product}")
+        products.append(product)
+        
+    for p in products:
+        log.debug(f"Product ({type(p)}): {p}")
