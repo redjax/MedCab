@@ -15,9 +15,8 @@ app_serial_dir = ".serial"
 env = "dev"
 log_level = "DEBUG"
 
-app_data_dir = ".data-dev"
-app_logs_dir = "logs-dev"
-app_cache_dir = ".cache-dev"
-app_serial_dir = ".serial-dev"
+app_logs_dir = "logs/dev"
+app_cache_dir = ".cache/dev"
+app_serial_dir = ".serial/dev"
 
 [prod]
