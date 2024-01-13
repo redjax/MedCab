@@ -200,6 +200,7 @@ site/
 
 .data*/*
 !.data*/example_*
+!.data*/branding*
 
 .cache*
 logs*
