@@ -137,7 +137,7 @@ def insert_product_into_db(client: httpx.Client = None, product_dict: dict = Non
 
             return False
 
-def loop_insert_products(products: list[dict] = None, api: APIServer = None) -> dict[str, list[dict]]:
+def loop_insert_products(products: list[dict] = None, api: APIServer = None, pause_between: bool = False) -> dict[str, list[dict]]:
     """Loop over a list of dict objects and make requests to insert them into the database.
     
     Params:
@@ -174,12 +174,15 @@ def loop_insert_products(products: list[dict] = None, api: APIServer = None) -> 
             
             pass
         
+        if pause_between:
+            input("PAUSE BEFORE NEXT INSERT...")
+        
     log.debug(f"Successes: [{len(successes)}]. Failures: [{len(failures)}]")
     
     return {"successes": successes, "failures": failures}
 
 
-def insert_samples(api: APIServer = None, products_json_dir: Path = None):
+def insert_samples(api: APIServer = None, products_json_dir: Path = None, pause_between_inserts: bool = False):
     """Load samples from data directory & insert them into database via HTTP request.
     
     Params:
@@ -217,7 +220,7 @@ def insert_samples(api: APIServer = None, products_json_dir: Path = None):
         log.error(Exception(f"Connection test was not successful. Exiting app."))
         exit(1)
         
-    insert_products = loop_insert_products(products=sample_dicts, api=api)
+    insert_products = loop_insert_products(products=sample_dicts, api=api, pause_between=pause_between_inserts)
     log.debug(f"Insert products res: {type(insert_products)}. Keys: {insert_products.keys()}")
     
     if len(insert_products["successes"]) >0:
@@ -275,4 +278,4 @@ def remove_all_items(api: APIServer = None) -> bool:
         return False
     else:
         log.error(f"Invalid choice: {remove_choice}")
-        remove_all_items()
+        remove_all_items(api=api)

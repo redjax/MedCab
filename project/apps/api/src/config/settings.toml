@@ -15,7 +15,7 @@ db_host = ""
 db_username = ""
 db_password = ""
 db_port = ""
-db_database = ".db/demo.sqlite"
+db_database = ".db/prod.sqlite"
 
 [dev]
 
@@ -31,7 +31,7 @@ db_host = ""
 db_username = ""
 db_password = ""
 db_port = ""
-db_database = ".db/demo.sqlite"
+db_database = ".db/dev.sqlite"
 
 api_port = 8086
 
