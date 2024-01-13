@@ -12,6 +12,8 @@ from pydantic import BaseModel, Field, ValidationError, field_validator, compute
 
 class DispensaryBase(BaseModel):
     name: str = Field(default=None)
+    city: str = Field(default=None)
+    state: str = Field(default=None)
 
 class DispensaryCreate(DispensaryBase):
     model_config = ConfigDict(from_attributes=True)
@@ -25,9 +27,9 @@ class DispensaryUpdate(DispensaryBase):
     model_config = ConfigDict(from_attributes=True)
     
     id: uuid.UUID | None = None
-    strain: str | None = None
-    family: str | None = None
-    form: str | None = None
+    name: str | None = None
+    city: str | None = None
+    state: str | None = None
 
 class Dispensary(DispensaryBase):
     pass
