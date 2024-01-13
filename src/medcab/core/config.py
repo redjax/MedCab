@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-from typing import Union
 from pathlib import Path
+from typing import Union
 
 from pydantic import Field, ValidationError, computed_field, field_validator
 from pydantic_settings import BaseSettings

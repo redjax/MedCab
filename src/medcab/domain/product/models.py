@@ -9,7 +9,6 @@ from loguru import logger as log
 from red_utils.ext.sqlalchemy_utils import Base
 from red_utils.ext.sqlalchemy_utils.custom_types import CompatibleUUID
 import sqlalchemy as sa
-
 from sqlalchemy import Column, ForeignKey, Table
 from sqlalchemy.orm import Mapped, Session, mapped_column, relationship
 from sqlalchemy.sql import func
@@ -45,10 +44,8 @@ class ProductModel(Base):
     total_cbd: Mapped[Decimal | None] = mapped_column(
         sa.Numeric(precision=3), default=0.0
     )
-    weight: Mapped[float] = mapped_column(
-        sa.Numeric(precision=3), default=0.0
-    )
-    
+    weight: Mapped[float] = mapped_column(sa.Numeric(precision=3), default=0.0)
+
     # purchaseDate: Mapped[date] = mapped_column(sa.Date, nullable=True)
     # dispensary: Mapped[str] = mapped_column(sa.String)
     # brand: Mapped[str] = mapped_column(sa.String, index=True)

@@ -8,8 +8,14 @@ import uuid
 
 from core.validators.product import VALID_FAMILIES, VALID_FORMS
 from loguru import logger as log
-from pydantic import BaseModel, Field, ValidationError, field_validator, computed_field, ConfigDict
-
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    ValidationError,
+    computed_field,
+    field_validator,
+)
 
 class ProductBase(BaseModel):
     favorite: bool = Field(default=False)
@@ -19,7 +25,7 @@ class ProductBase(BaseModel):
     total_thc: Decimal = Field(default=0.0, max_digits=5, decimal_places=3)
     total_cbd: Decimal = Field(default=0.0, max_digits=5, decimal_places=3)
     weight: Decimal = Field(default=0.0, max_digits=5, decimal_places=3)
-    
+
     # purchaseDate: Optional[date] = Field(default=None)
     # dispensary: Optional[str] = Field(default=None)
     # brand: Optional[str] = Field(default=None)
@@ -77,7 +83,7 @@ class ProductCreate(ProductBase):
 
 class ProductUpdate(ProductBase):
     model_config = ConfigDict(from_attributes=True)
-    
+
     id: uuid.UUID | None = None
     strain: str | None = None
     family: str | None = None

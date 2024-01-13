@@ -15,5 +15,5 @@ from .crud import (
     validate_db,
     validate_product_create,
 )
-from .schemas import Product, ProductCreate, ProductUpdate
 from .models import ProductModel
+from .schemas import Product, ProductCreate, ProductUpdate

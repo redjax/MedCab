@@ -1,16 +1,22 @@
-from typing import Union
+from __future__ import annotations
+
 from decimal import Decimal
-
-from domain.product import Product
-from domain.dispensary import Dispensary
-
 from typing import Union
 import uuid
 
-import pendulum
 from core.validators.product import VALID_FAMILIES, VALID_FORMS
+from domain.dispensary import Dispensary
+from domain.product import Product
 from loguru import logger as log
-from pydantic import BaseModel, Field, ValidationError, field_validator, computed_field, ConfigDict
+import pendulum
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    ValidationError,
+    computed_field,
+    field_validator,
+)
 
 class PurchaseBase(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
@@ -19,7 +25,7 @@ class PurchaseBase(BaseModel):
     dispensary: Dispensary | None = Field(default=None)
     product: Product = Field(default=None)
     price: Decimal = Field(default=0.0, max_digits=5, decimal_places=3)
-    
+
     @field_validator("date")
     def validate_date(cls, v) -> pendulum.Date:
         if isinstance(v, pendulum.Date):
@@ -30,6 +36,7 @@ class PurchaseBase(BaseModel):
                 return v
             except Exception as exc:
                 raise ValidationError
+
 
 class PurchaseCreate(PurchaseBase):
     id: uuid.UUID
@@ -65,6 +72,6 @@ class PurchaseUpdate(PurchaseBase):
     # class Config:
     #     from_attributes = True
 
+
 class Purchase(PurchaseBase):
     pass
-

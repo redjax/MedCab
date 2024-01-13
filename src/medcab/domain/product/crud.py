@@ -5,15 +5,13 @@ import uuid
 from .models import ProductModel
 from .schemas import Product, ProductCreate
 
-from core.validators.product import VALID_FAMILIES, VALID_FORMS
 from core.utils.crud_utils import convert_sqla_rows_to_dicts
-
+from core.validators.product import VALID_FAMILIES, VALID_FORMS
 from loguru import logger as log
 from red_utils.ext.pydantic_utils.parsers import parse_pydantic_schema
 from sqlalchemy import func, select
-from sqlalchemy.orm import Query, Session
 from sqlalchemy.engine import Row
-
+from sqlalchemy.orm import Query, Session
 
 def validate_db(db: Session = None) -> Session:
     if not db:
@@ -57,7 +55,6 @@ def create_product(product: ProductCreate = None, db: Session = None) -> Product
 
     log.debug(f"Product ({type(product)}): {product}")
 
-    
     with db as sess:
         db_product: ProductModel | None = None
 
@@ -67,18 +64,22 @@ def create_product(product: ProductCreate = None, db: Session = None) -> Product
                 ProductModel.strain == product.strain
             )
         except Exception as exc:
-            msg = Exception(f"Unhandled exception building SELECT Product [{product.strain}] statement. Details: {exc}")
+            msg = Exception(
+                f"Unhandled exception building SELECT Product [{product.strain}] statement. Details: {exc}"
+            )
             log.error(msg)
-            
+
         log.debug(f"Executing SELECT ProductModel statement")
-        
+
         try:
             db_products: list[Row] = sess.execute(db_product_sel).all()
 
         except Exception as exc:
-            msg = Exception(f"Unhandled exception executing SELECT statement for Product [{product.strain}]. Details: {exc}")
+            msg = Exception(
+                f"Unhandled exception executing SELECT statement for Product [{product.strain}]. Details: {exc}"
+            )
             log.error(msg)
-            
+
             raise msg
 
         if db_products is not None:
@@ -92,7 +93,9 @@ def create_product(product: ProductCreate = None, db: Session = None) -> Product
             try:
                 dump_schema = parse_pydantic_schema(schema=product)
             except Exception as exc:
-                msg = Exception(f"Unhandled exception dumping Pydantic schema. Details: {exc}")
+                msg = Exception(
+                    f"Unhandled exception dumping Pydantic schema. Details: {exc}"
+                )
                 log.error(msg)
 
             log.debug(f"Dump schema ({type(dump_schema)}): {dump_schema}")
@@ -100,7 +103,9 @@ def create_product(product: ProductCreate = None, db: Session = None) -> Product
             try:
                 new_product: ProductModel = ProductModel(**dump_schema)
             except Exception as exc:
-                msg = Exception(f"Unhandled exception convering Product schema to model. Schema ({type(dump_schema)}): {dump_schema}. Details: {exc}")
+                msg = Exception(
+                    f"Unhandled exception convering Product schema to model. Schema ({type(dump_schema)}): {dump_schema}. Details: {exc}"
+                )
 
             try:
                 sess.add(new_product)
@@ -109,14 +114,18 @@ def create_product(product: ProductCreate = None, db: Session = None) -> Product
                 return new_product
 
             except Exception as exc:
-                msg = Exception(f"Unhandled exception committing Product to database. Details: {exc}")
+                msg = Exception(
+                    f"Unhandled exception committing Product to database. Details: {exc}"
+                )
 
         else:
-            log.debug(f"Found [{len(db_products)}] Product(s) matching strain {product.strain} in the database.")            
+            log.debug(
+                f"Found [{len(db_products)}] Product(s) matching strain {product.strain} in the database."
+            )
             db_product_dicts: list[dict] = convert_sqla_rows_to_dicts(rows=db_products)
-                
+
             log.debug(f"Converted [{len(db_product_dicts)}] Product Row(s) to dict(s)")
-            
+
             for _product in db_product_dicts:
                 p: ProductModel = _product["ProductModel"]
                 log.debug(f"_product ({type(p)}): {p}")
@@ -139,26 +148,31 @@ def create_product(product: ProductCreate = None, db: Session = None) -> Product
                 try:
                     dump_schema = parse_pydantic_schema(schema=product)
                 except Exception as exc:
-                    msg = Exception(f"Unhandled exception dumping Product schema to dict. Product ({type(product)}): {product}. Details: {exc}")
+                    msg = Exception(
+                        f"Unhandled exception dumping Product schema to dict. Product ({type(product)}): {product}. Details: {exc}"
+                    )
                     log.error(msg)
 
                 try:
                     new_product: ProductModel = ProductModel(**dump_schema)
                 except Exception as exc:
-                    msg = Exception(f"Unhandled exception converting Product schema to model. Schema ({type(dump_schema)}): {dump_schema}. Details: {exc}")
+                    msg = Exception(
+                        f"Unhandled exception converting Product schema to model. Schema ({type(dump_schema)}): {dump_schema}. Details: {exc}"
+                    )
 
                 try:
                     sess.add(new_product)
                     sess.commit()
 
                     return new_product
-                
+
                 except Exception as exc:
-                    msg = Exception(f"Unhandled exception inserting new Product. Product ({type(new_product)}): {new_product}. Details: {exc}")
+                    msg = Exception(
+                        f"Unhandled exception inserting new Product. Product ({type(new_product)}): {new_product}. Details: {exc}"
+                    )
 
             else:
                 return db_product
-
 
 
 def get_all_products(db: Session = None) -> list[ProductModel]:
