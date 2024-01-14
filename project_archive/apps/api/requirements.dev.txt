@@ -6,7 +6,7 @@ annotated-types==0.5.0
 anyio==3.7.1
 arrow==1.2.3
 black==23.7.0
-certifi==2023.5.7
+certifi==2023.7.22
 click==8.1.4
 cramjam==2.7.0
 diskcache==5.6.1
