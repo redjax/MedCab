@@ -18,6 +18,7 @@ from pydantic import (
 )
 
 class DispensaryBase(BaseModel):
+    favorite: bool = Field(default=False)
     name: str = Field(default=None)
     city: str = Field(default=None)
     state: str = Field(default=None)
