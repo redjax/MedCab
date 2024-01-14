@@ -197,3 +197,11 @@ cython_debug/
 
 ## Ignore mkdocs builds
 site/
+
+.data*/*
+!.data*/example_*
+!.data*/branding*
+
+.cache*
+logs*
+.serial*
