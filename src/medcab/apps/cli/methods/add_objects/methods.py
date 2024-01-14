@@ -72,7 +72,7 @@ def add_new_dispensary() -> Dispensary:
 
 def add_new_purchase() -> Purchase:
     # Purchase(date=..., dispensary=..., product=..., price=...)
-    date = click.prompt(f"Purchase date (ex: {pendulum.now().date()})", type=str)
+    date = click.prompt(f"Purchase date (ex: {pendulum.now().date()})", type=str, default=f"{pendulum.now().date()}")
     
     try:
         date_convert: pendulum.Date = pendulum.from_format(date, "YYYY-MM-DD").date()
@@ -96,5 +96,4 @@ def add_new_purchase() -> Purchase:
         msg = Exception(f"Unhandled exception creating new Purchasea. Details: {exc}")
         click.echo(msg)
 
-        raise msg
-    
+        raise msg    
