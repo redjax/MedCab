@@ -7,7 +7,7 @@ from typing import Union
 from core.validators.product import VALID_FAMILIES, VALID_FORMS
 from domain.dispensary import Dispensary
 from domain.product import Product
-from domain.purchase import Purchase
+from domain.purchase import Purchase, PurchaseNote
 
 import click
 import inquirer
@@ -71,7 +71,6 @@ def add_new_dispensary() -> Dispensary:
         raise msg
 
 def add_new_purchase() -> Purchase:
-    # Purchase(date=..., dispensary=..., product=..., price=...)
     date = click.prompt(f"Purchase date (ex: {pendulum.now().date()})", type=str, default=f"{pendulum.now().date()}")
     
     try:
@@ -88,8 +87,23 @@ def add_new_purchase() -> Purchase:
     
     price = click.prompt("Purchase price", type=Decimal)
     
+    purchase_notes: list[PurchaseNote] = []
+    reprompt: bool = click.confirm("Add a note to this Purchase?")
+    
+    while reprompt:
+        add_note = click.prompt("Note text", type=str, default=None)
+        if not add_note:
+            click.echo("Note cannot be empty")
+        else:
+            _note = PurchaseNote(content=add_note)
+            purchase_notes.append(_note)
+        
+        reprompt = click.confirm("Add another note to this Purchase?")
+    
     try:
         purchase: Purchase = Purchase(date=date, dispensary=dispensary, product=product, price=price)
+        if purchase_notes:
+            purchase.notes = purchase_notes
         
         return purchase
     except Exception as exc:

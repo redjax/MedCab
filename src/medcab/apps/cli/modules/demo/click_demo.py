@@ -7,7 +7,7 @@ from apps.cli.methods.add_objects.methods import add_new_dispensary, add_new_pro
 
 from domain.dispensary import Dispensary
 from domain.product import Product
-from domain.purchase import Purchase
+from domain.purchase import Purchase, PurchaseNote
 
 from entrypoints.startup import entrypoint_app_startup
 

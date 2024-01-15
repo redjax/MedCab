@@ -88,6 +88,9 @@ class ProductUpdate(ProductBase):
     strain: str | None = None
     family: str | None = None
     form: str | None = None
+    total_thc: Decimal | None = None
+    total_cbd: Decimal | None = None
+    weight: Decimal | None = None
 
     # weight: float | None = None
     # favorite: bool | None = None
