@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from .config import AppSettings
+from .config import AppSettings, DBSettings
 
 from dynaconf import Dynaconf
 
@@ -27,3 +27,12 @@ ENSURE_DIRS: list[Path] = [
     APP_SETTINGS.cache_dir,
     APP_SETTINGS.serial_dir,
 ]
+
+DB_SETTINGS: DBSettings = DBSettings(
+    type=DYNACONF_SETTINGS.DB_TYPE,
+    host=DYNACONF_SETTINGS.DB_HOST,
+    port=DYNACONF_SETTINGS.DB_PORT,
+    username=DYNACONF_SETTINGS.DB_USERNAME,
+    password=DYNACONF_SETTINGS.DB_PASSWORD,
+    database=DYNACONF_SETTINGS.DB_DATABASE,
+)

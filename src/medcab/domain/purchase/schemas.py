@@ -21,15 +21,17 @@ from pydantic import (
 def get_date_now() -> pendulum.Date:
     return pendulum.now().date()
 
+
 def get_ts() -> pendulum.DateTime:
     return pendulum.now(tz="Etc/UTC")
+
 
 class PurchaseNoteBase(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
     date: Union[str, pendulum.DateTime] = Field(default_factory=get_ts)
     content: str = Field(default=None)
-    
+
     @field_validator("date")
     def validate_date(cls, v) -> pendulum.Date:
         if isinstance(v, pendulum.Date):
@@ -40,20 +42,24 @@ class PurchaseNoteBase(BaseModel):
                 return v
             except Exception as exc:
                 raise ValidationError
-    
+
+
 class PurchaseNoteCreate(PurchaseNoteBase):
     id: uuid.UUID
 
     class Config:
         from_attributes = True
 
+
 class PurchaseNoteUpdate(PurchaseNoteBase):
     id: uuid.UUID | None = None
     date: Union[str, pendulum.Date] | None = None
     note: str | None = None
-    
+
+
 class PurchaseNote(PurchaseNoteBase):
     pass
+
 
 class PurchaseBase(BaseModel):
     model_config = ConfigDict(arbitrary_types_allowed=True)
@@ -83,7 +89,7 @@ class PurchaseCreate(PurchaseBase):
 
 class PurchaseUpdate(PurchaseBase):
     model_config = ConfigDict(from_attributes=True)
-    
+
     id: uuid.UUID | None = None
     date: Union[str, pendulum.Date] | None = None
     dispensary: Dispensary | None = None
@@ -106,6 +112,7 @@ class PurchaseUpdate(PurchaseBase):
     # terpenes: list[Terpene] | None = None
     # notes: list[ProductNote] | None = None
     # images: list[ProductImage] | None = None
-    
+
+
 class Purchase(PurchaseBase):
     pass

@@ -4,12 +4,11 @@ from decimal import Decimal
 from pathlib import Path
 from typing import Union
 
+import click
 from core.validators.product import VALID_FAMILIES, VALID_FORMS
 from domain.dispensary import Dispensary
 from domain.product import Product
 from domain.purchase import Purchase, PurchaseNote
-
-import click
 import inquirer
 import pendulum
 
@@ -70,26 +69,33 @@ def add_new_dispensary() -> Dispensary:
 
         raise msg
 
+
 def add_new_purchase() -> Purchase:
-    date = click.prompt(f"Purchase date (ex: {pendulum.now().date()})", type=str, default=f"{pendulum.now().date()}")
-    
+    date = click.prompt(
+        f"Purchase date (ex: {pendulum.now().date()})",
+        type=str,
+        default=f"{pendulum.now().date()}",
+    )
+
     try:
         date_convert: pendulum.Date = pendulum.from_format(date, "YYYY-MM-DD").date()
         date = date_convert
     except Exception as exc:
-        msg = Exception(f"Unhandled exception converting input to date: {date}. Details: {exc}")
+        msg = Exception(
+            f"Unhandled exception converting input to date: {date}. Details: {exc}"
+        )
         click.echo(msg)
-        
+
         raise msg
-    
+
     dispensary = add_new_dispensary()
     product = add_new_product()
-    
+
     price = click.prompt("Purchase price", type=Decimal)
-    
+
     purchase_notes: list[PurchaseNote] = []
     reprompt: bool = click.confirm("Add a note to this Purchase?")
-    
+
     while reprompt:
         add_note = click.prompt("Note text", type=str, default=None)
         if not add_note:
@@ -97,17 +103,19 @@ def add_new_purchase() -> Purchase:
         else:
             _note = PurchaseNote(content=add_note)
             purchase_notes.append(_note)
-        
+
         reprompt = click.confirm("Add another note to this Purchase?")
-    
+
     try:
-        purchase: Purchase = Purchase(date=date, dispensary=dispensary, product=product, price=price)
+        purchase: Purchase = Purchase(
+            date=date, dispensary=dispensary, product=product, price=price
+        )
         if purchase_notes:
             purchase.notes = purchase_notes
-        
+
         return purchase
     except Exception as exc:
         msg = Exception(f"Unhandled exception creating new Purchasea. Details: {exc}")
         click.echo(msg)
 
-        raise msg    
+        raise msg

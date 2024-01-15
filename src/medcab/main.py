@@ -1,12 +1,21 @@
 from __future__ import annotations
 
-from core.dependencies import APP_SETTINGS, ENSURE_DIRS
+from core.db import get_db_session
+from core.dependencies import APP_SETTINGS, DB_SETTINGS, ENSURE_DIRS
 from domain.dispensary import Dispensary
-from domain.product import Product
-from domain.purchase import Purchase
+from domain.product import Product, ProductModel
+from domain.purchase import Purchase, PurchaseNote
+from entrypoints.startup import entrypoint_sqlalchemy_startup
 from examples.products import load_example_products_simplified
 from loguru import logger as log
 from red_utils.ext.loguru_utils import LoguruSinkStdOut, init_logger
+from red_utils.ext.sqlalchemy_utils import (
+    create_base_metadata,
+    generate_metadata,
+    get_engine,
+    get_session,
+    saSQLiteConnection,
+)
 from red_utils.std.path_utils import ensure_dirs_exist
 
 def demo():
@@ -32,7 +41,8 @@ def demo():
 if __name__ == "__main__":
     init_logger([LoguruSinkStdOut(level=APP_SETTINGS.log_level).as_dict()])
     log.info(f"Settings: {APP_SETTINGS}")
+    log.info(f"DB Settings: {DB_SETTINGS}")
 
     ensure_dirs_exist(ENSURE_DIRS)
 
-    demo()
+    entrypoint_sqlalchemy_startup()

@@ -1,7 +1,8 @@
 from __future__ import annotations
 
 from apps.cli import cli
-from core.dependencies import APP_SETTINGS
+from core.dependencies import APP_SETTINGS, DB_SETTINGS
+from loguru import logger as log
 from red_utils.ext.loguru_utils import LoguruSinkStdOut, init_logger
 
 if __name__ == "__main__":

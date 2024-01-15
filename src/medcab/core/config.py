@@ -25,3 +25,24 @@ class AppSettings(BaseSettings):
             return v
         else:
             raise ValidationError
+
+
+class DBSettings(BaseSettings):
+    type: str = Field(default=None, env="DB_TYPE")
+    host: str | None = Field(default=None, env="DB_HOST")
+    port: Union[str, int] | None = Field(default=None, env="DB_PORT")
+    username: str | None = Field(default=None, env="DB_USERNAME")
+    password: str | None = Field(default=None, env="DB_PASSWORD", repr=False)
+    database: str = Field(default=None, env="DB_DATABASE")
+    echo: bool = Field(default=False, env="DB_ECHO")
+
+    @field_validator("port")
+    def validate_port(cls, v) -> int:
+        if v is None or v == "":
+            return None
+        elif isinstance(v, int):
+            return v
+        elif isinstance(v, str):
+            return int(v)
+        else:
+            raise ValidationError

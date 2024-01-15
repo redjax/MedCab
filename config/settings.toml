@@ -9,6 +9,14 @@ app_logs_dir = "logs"
 app_cache_dir = ".cache"
 app_serial_dir = ".serial"
 
+db_type = "sqlite"
+db_host = ""
+db_username = ""
+## Set in .secrets.toml
+# db_password = ""
+db_port = ""
+db_database = ".db/prod.sqlite"
+db_echo = false
 
 [dev]
 
@@ -19,4 +27,21 @@ app_logs_dir = "logs/dev"
 app_cache_dir = ".cache/dev"
 app_serial_dir = ".serial/dev"
 
+db_type = "sqlite"
+db_host = ""
+db_username = ""
+## Set in .secrets.toml
+# db_password = ""
+db_port = ""
+db_database = ".db/dev.sqlite"
+db_echo = true
+
 [prod]
+
+db_type = "sqlite"
+db_host = ""
+db_username = ""
+## Set in .secrets.toml
+# db_password = ""
+db_port = ""
+db_database = ".db/prod.sqlite"
