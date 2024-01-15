@@ -9,13 +9,6 @@ from entrypoints.startup import entrypoint_sqlalchemy_startup
 from examples.products import load_example_products_simplified
 from loguru import logger as log
 from red_utils.ext.loguru_utils import LoguruSinkStdOut, init_logger
-from red_utils.ext.sqlalchemy_utils import (
-    create_base_metadata,
-    generate_metadata,
-    get_engine,
-    get_session,
-    saSQLiteConnection,
-)
 from red_utils.std.path_utils import ensure_dirs_exist
 
 def demo():
