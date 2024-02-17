@@ -66,7 +66,7 @@ class PurchaseBase(BaseModel):
 
     date: Union[str, pendulum.Date] = Field(default=None)
     dispensary: Dispensary | None = Field(default=None)
-    product: Product = Field(default=None)
+    products: list[Product] = Field(default=None)
     price: Decimal = Field(default=0.0, max_digits=5, decimal_places=3)
     notes: list[PurchaseNote] | None = Field(default=None)
 
@@ -93,7 +93,7 @@ class PurchaseUpdate(PurchaseBase):
     id: uuid.UUID | None = None
     date: Union[str, pendulum.Date] | None = None
     dispensary: Dispensary | None = None
-    product: Product | None = None
+    products: list[Product] | None = None
     price: Decimal | None = None
 
     # weight: float | None = None
